@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Fluency Quest · criar login</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;600;700;800&family=IBM+Plex+Mono:wght@400&display=swap">
+<style>
+:root { --bg:#f1f2f4; --surface:#fff; --sunken:#e8eaee; --ink:#14171c; --ink-2:#4a505b; --ink-3:#6c727d; --rule:#dde0e6; --accent:#0b6b55; --accent-ink:#fff; --signal:#d4442a; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --bg:#0f1114; --surface:#171a1f; --sunken:#1e2228; --ink:#eceef1; --ink-2:#b3b8c1; --ink-3:#8b919c; --rule:#2a2f37; --accent:#4cc4a0; --accent-ink:#0f1114; --signal:#ff7a57; color-scheme: dark; } }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.5 "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif; }
+main { max-width: 520px; margin: 0 auto; padding: 40px 16px 60px; display: grid; gap: 18px; }
+h1 { margin: 0; font-size: 26px; letter-spacing: -0.02em; }
+p { margin: 0; color: var(--ink-2); }
+.card { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 22px; display: grid; gap: 14px; }
+label { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+input { font: inherit; font-weight: 400; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 8px; padding: 11px 12px; width: 100%; }
+input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+button { font: inherit; font-weight: 600; border: 1px solid transparent; border-radius: 8px; padding: 11px 16px; cursor: pointer; background: var(--accent); color: var(--accent-ink); }
+button.line { background: var(--surface); color: var(--ink); border-color: var(--rule); }
+button[disabled] { opacity: .6; cursor: wait; }
+.err { color: var(--signal); font-size: 13.5px; }
+.err:empty { display: none; }
+pre { margin: 0; font: 12.5px/1.5 "IBM Plex Mono", ui-monospace, Consolas, monospace; background: var(--sunken); border-radius: 8px; padding: 14px; overflow-x: auto; white-space: pre; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; }
+ol { margin: 0; padding-left: 20px; color: var(--ink-2); display: grid; gap: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <div>
+    <h1>Criar seu login</h1>
+    <p>Esta página transforma sua senha num hash e monta o arquivo <b>config.js</b>. Nada sai do seu navegador.</p>
+  </div>
+
+  <form class="card" id="f" novalidate>
+    <label>Seu nome (aparece no site)<input id="nome" autocomplete="name"></label>
+    <label>Usuário<input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false"></label>
+    <label>Senha<input id="senha" type="password" autocomplete="new-password"></label>
+    <label>Repita a senha<input id="senha2" type="password" autocomplete="new-password"></label>
+    <p class="err" id="err" role="alert"></p>
+    <button id="go" type="submit">Gerar config.js</button>
+  </form>
+
+  <section class="card" id="out" hidden>
+    <p>Pronto. Agora:</p>
+    <ol>
+      <li>Baixe o arquivo ou copie o texto abaixo.</li>
+      <li>No repositório do GitHub, substitua o <b>config.js</b> por este.</li>
+      <li>Espere um minuto e entre no site com o usuário e a senha que você escolheu.</li>
+    </ol>
+    <pre id="code"></pre>
+    <div class="row">
+      <button type="button" id="dl">Baixar config.js</button>
+      <button type="button" class="line" id="cp">Copiar texto</button>
+    </div>
+  </section>
+</main>
+<script>
+(function () {
+  'use strict';
+  var err = document.getElementById('err'), go = document.getElementById('go'), text = '';
+  async function derive(user, pass) {
+    var enc = new TextEncoder();
+    var key = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveBits']);
+    var bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode('fluency-quest:' + user), iterations: 250000, hash: 'SHA-256' }, key, 256);
+    return Array.from(new Uint8Array(bits)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+  document.getElementById('f').addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var nome = document.getElementById('nome').value.trim();
+    var u = document.getElementById('usuario').value.trim().toLowerCase();
+    var p = document.getElementById('senha').value, p2 = document.getElementById('senha2').value;
+    if (!u) { err.textContent = 'Escolha um usuário.'; return; }
+    if (p.length < 10) { err.textContent = 'Use uma senha com pelo menos 10 caracteres. Como o hash fica público no GitHub, senha curta é fácil de descobrir.'; return; }
+    if (p !== p2) { err.textContent = 'As duas senhas estão diferentes.'; return; }
+    if (!window.crypto || !crypto.subtle) { err.textContent = 'Abra esta página pelo link https do GitHub Pages para gerar o hash.'; return; }
+    err.textContent = ''; go.disabled = true; go.textContent = 'Gerando…';
+    var h = await derive(u, p);
+    text = '/* Fluency Quest: seus dados de login.\n   Gerado por gerar-senha.html. A senha não fica salva aqui, só um hash dela. */\n' +
+      'window.FQ_CONFIG = {\n  nome: ' + JSON.stringify(nome) + ',\n  usuario: ' + JSON.stringify(u) + ',\n  senhaHash: "' + h + '"\n};\n';
+    document.getElementById('code').textContent = text;
+    document.getElementById('out').hidden = false;
+    go.disabled = false; go.textContent = 'Gerar config.js';
+    document.getElementById('out').scrollIntoView({ behavior: 'smooth' });
+  });
+  document.getElementById('dl').addEventListener('click', function () {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], { type: 'text/javascript' }));
+    a.download = 'config.js'; document.body.appendChild(a); a.click(); a.remove();
+  });
+  document.getElementById('cp').addEventListener('click', function () {
+    var b = this;
+    navigator.clipboard.writeText(text).then(function () { b.textContent = 'Copiado'; setTimeout(function () { b.textContent = 'Copiar texto'; }, 1500); });
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1422 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Fluency Quest</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Conceito: documento de viagem. A trilha é uma linha de metrô com estações, a próxima aula é um cartão de embarque (a peça-assinatura) e as conquistas são carimbos de passaporte. Importância é codificada pela forma do marcador, não por cor. */
+:root {
+  --bg: #f1f2f4;
+  --surface: #ffffff;
+  --sunken: #e8eaee;
+  --ink: #14171c;
+  --ink-2: #4a505b;
+  --ink-3: #6c727d;
+  --rule: #dde0e6;
+  --accent: #0b6b55;
+  --accent-ink: #ffffff;
+  --accent-tint: #dcebe5;
+  --signal: #d4442a;
+  --font-sans: "Schibsted Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+  --r: 10px;
+  --bar-h: 64px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0f1114; --surface: #171a1f; --sunken: #1e2228; --ink: #eceef1; --ink-2: #b3b8c1; --ink-3: #8b919c; --rule: #2a2f37;
+    --accent: #4cc4a0; --accent-ink: #0f1114; --accent-tint: #163128; --signal: #ff7a57;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0f1114; --surface: #171a1f; --sunken: #1e2228; --ink: #eceef1; --ink-2: #b3b8c1; --ink-3: #8b919c; --rule: #2a2f37;
+  --accent: #4cc4a0; --accent-ink: #0f1114; --accent-tint: #163128; --signal: #ff7a57;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-sans); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+h1, h2, h3 { margin: 0; text-wrap: balance; font-weight: 700; letter-spacing: -0.02em; }
+p { margin: 0; }
+button { font: inherit; color: inherit; }
+.num { font-variant-numeric: tabular-nums; }
+.mono { font-family: var(--font-mono); }
+.icon { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex: none; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 6px; }
+.gutter { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.container { max-width: 1200px; margin: 0 auto; }
+
+/* Botões */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid transparent; border-radius: 8px; padding: 10px 16px; font-weight: 600; font-size: 14.5px; cursor: pointer; transition: background-color .15s, border-color .15s, color .15s, transform .1s; white-space: nowrap; }
+.btn:active { transform: translateY(1px); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-primary:hover { filter: brightness(1.08); }
+.btn-line { background: var(--surface); border-color: var(--rule); color: var(--ink); }
+.btn-line:hover { border-color: var(--ink-3); }
+.btn-line.on { border-color: var(--accent); color: var(--accent); background: var(--accent-tint); }
+.btn-quiet { background: none; color: var(--ink-2); padding-inline: 6px; }
+.btn-quiet:hover { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.btn-text { background: none; border: 0; padding: 4px 0; color: var(--accent); font-weight: 600; font-size: 13.5px; cursor: pointer; }
+.btn-text:hover { text-decoration: underline; text-underline-offset: 3px; }
+.btn-danger { background: var(--signal); color: var(--surface); }
+
+/* Barra superior */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--surface); border-bottom: 1px solid var(--rule); }
+.bar .container { display: flex; align-items: center; gap: 28px; min-height: var(--bar-h); }
+.mark { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 16px; letter-spacing: -0.02em; white-space: nowrap; }
+.mark-glyph { width: 26px; height: 26px; border-radius: 6px; background: var(--ink); color: var(--surface); display: grid; place-items: center; }
+.mark-glyph .icon { width: 15px; height: 15px; stroke-width: 2.2; }
+.lvl { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; }
+.lv-num { font-size: 26px; font-weight: 800; letter-spacing: -0.04em; line-height: 1; min-width: 1.2ch; }
+.lv-body { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto; column-gap: 12px; row-gap: 4px; align-items: center; min-width: 0; flex: 1; max-width: 360px; }
+.lv-rank { font-weight: 600; font-size: 14px; white-space: nowrap; }
+.lv-sep { color: var(--ink-3); font-weight: 400; }
+.lv-xp { grid-column: 1 / -1; font-size: 12px; color: var(--ink-3); }
+.lv-track { height: 4px; background: var(--sunken); border-radius: 2px; overflow: hidden; min-width: 60px; }
+.lv-track span { display: block; height: 100%; background: var(--accent); transition: width .5s cubic-bezier(.2,.8,.2,1); }
+.hstats { display: flex; align-items: center; gap: 22px; }
+.hstat { display: inline-flex; align-items: baseline; gap: 6px; color: var(--ink-2); font-size: 13px; white-space: nowrap; }
+.hstat .icon { width: 16px; height: 16px; align-self: center; color: var(--ink-3); }
+.hstat b { font-size: 16px; color: var(--ink); font-weight: 700; }
+.hstat.hot .icon { color: var(--signal); }
+.sync { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--ink-3); white-space: nowrap; }
+.sync .icon { width: 15px; height: 15px; }
+@media (max-width: 860px) { .mark-text, .sync span, .hstat .hl, .hstat.xpall { display: none; } .bar .container { gap: 14px; } .hstats { gap: 14px; } }
+
+main.container { display: grid; gap: 40px; padding-block: 28px 80px; }
+
+/* Cartão de embarque */
+.top { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 20px; align-items: stretch; }
+@media (max-width: 960px) { .top { grid-template-columns: 1fr; } }
+.pass { display: grid; grid-template-columns: minmax(0, 1fr) 230px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; position: relative; min-width: 0; }
+.pass-main { padding: 26px 28px 24px; display: grid; gap: 18px; align-content: start; min-width: 0; }
+.pass-top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.pass-kicker { font-weight: 700; color: var(--accent); }
+.pass-route { color: var(--ink-3); }
+.pass-title { font-size: clamp(28px, 4.2vw, 44px); font-weight: 800; line-height: 1.02; letter-spacing: -0.035em; overflow-wrap: anywhere; }
+.pass-note { color: var(--ink-2); }
+.pass-fields { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(88px, 1fr)); gap: 12px 20px; padding-block: 14px; border-block: 1px solid var(--rule); }
+.pass-fields div { min-width: 0; }
+.pass-fields dt { font-size: 11.5px; color: var(--ink-3); letter-spacing: .02em; }
+.pass-fields dd { margin: 2px 0 0; font-weight: 600; font-size: 15px; overflow-wrap: anywhere; }
+.pass-fields dd.mono { font-family: var(--font-mono); font-weight: 500; }
+.pass-progress { display: flex; align-items: center; gap: 12px; font-size: 12.5px; color: var(--ink-3); }
+.pp-bar { flex: 1; max-width: 260px; height: 4px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.pp-bar span { display: block; height: 100%; background: var(--accent); }
+.pass-actions { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+.pass-stub { position: relative; padding: 26px 22px 22px; display: flex; flex-direction: column; gap: 8px; border-left: 1.5px dashed var(--rule); background: var(--surface); border-radius: 0 14px 14px 0; min-width: 0; }
+.pass-stub::before, .pass-stub::after { content: ""; position: absolute; left: -10px; width: 18px; height: 18px; border-radius: 50%; background: var(--bg); border: 1px solid var(--rule); }
+.pass-stub::before { top: -10px; clip-path: inset(50% 0 0 0); }
+.pass-stub::after { bottom: -10px; clip-path: inset(0 0 50% 0); }
+.stub-route { font-size: 12.5px; color: var(--ink-3); }
+.stub-title { font-size: 17px; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; overflow-wrap: anywhere; }
+.stub-meta { font-size: 12.5px; color: var(--ink-2); }
+.stub-empty { font-size: 13.5px; color: var(--ink-3); }
+.pass-stub .btn { align-self: flex-start; margin-top: 4px; }
+.barcode { margin-top: auto; padding-top: 16px; height: 44px; width: 100%; background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 4px, var(--ink) 4px 5px, transparent 5px 8px, var(--ink) 8px 11px, transparent 11px 12px, var(--ink) 12px 13px, transparent 13px 16px); background-clip: content-box; opacity: .85; }
+@media (max-width: 640px) {
+  .pass { grid-template-columns: 1fr; }
+  .pass-main { padding: 22px 18px 20px; }
+  .pass-stub { border-left: 0; border-top: 1.5px dashed var(--rule); border-radius: 0 0 14px 14px; padding: 20px 18px; }
+  .pass-stub::before { top: -10px; left: -10px; clip-path: inset(0 0 0 50%); }
+  .pass-stub::after { top: -10px; bottom: auto; left: auto; right: -10px; clip-path: inset(0 50% 0 0); }
+  .barcode { height: 36px; }
+}
+
+/* Meta semanal */
+.week { background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.wk-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.wk-head h2 { font-size: 18px; }
+.wk-end { font-size: 12.5px; color: var(--ink-3); }
+.wk-list { list-style: none; margin: 0; padding: 0; }
+.wk-row { display: grid; grid-template-columns: minmax(0, 1fr) auto 40px; gap: 12px; align-items: center; padding: 10px 0; border-top: 1px solid var(--rule); font-size: 14px; }
+.wk-row:last-child { border-bottom: 1px solid var(--rule); }
+.wk-val { text-align: right; font-size: 13px; color: var(--ink-3); }
+.wk-row.ok .wk-val { color: var(--accent); font-weight: 700; }
+.ticks { display: inline-flex; gap: 3px; }
+.tick { width: 10px; height: 10px; border-radius: 2px; border: 1.5px solid var(--rule); }
+.tick.on { background: var(--accent); border-color: var(--accent); }
+.wk-reward { font-size: 13px; color: var(--ink-2); }
+.wk-reward.won { color: var(--accent); font-weight: 600; }
+.wk-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: auto; }
+.wk-actions .btn { padding-inline: 10px; font-size: 13.5px; }
+.wk-undo { align-self: flex-start; background: none; border: 0; padding: 0; color: var(--ink-3); font-size: 12.5px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* Números */
+.figures { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-block: 1px solid var(--rule); }
+.fig { padding: 18px 20px; display: grid; gap: 2px; min-width: 0; }
+.fig + .fig { border-left: 1px solid var(--rule); }
+.fig-val { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; }
+.fig-val small { font-size: 15px; color: var(--ink-3); font-weight: 600; letter-spacing: 0; }
+.fig-lab { font-size: 13px; color: var(--ink-2); }
+.fig-note { font-size: 12px; color: var(--ink-3); }
+@media (max-width: 900px) {
+  .figures { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .fig { border-left: 0 !important; border-top: 1px solid var(--rule); }
+  .fig:nth-child(-n+2) { border-top: 0; }
+  .fig:nth-child(even) { border-left: 1px solid var(--rule) !important; }
+  .fig:last-child { grid-column: 1 / -1; border-left: 0 !important; }
+}
+
+/* Cabeçalhos de seção */
+.sec { display: grid; gap: 18px; }
+.sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 8px 24px; flex-wrap: wrap; }
+.sec-head h2 { font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+.sec-head p { color: var(--ink-2); font-size: 14px; max-width: 56ch; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-2); }
+
+/* Marcadores de importância: forma, não cor */
+.imp { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.mk { width: 10px; height: 10px; border-radius: 50%; flex: none; display: inline-block; }
+.mk-ess { background: var(--ink); }
+.mk-mi { border: 1.5px solid var(--ink); background: linear-gradient(90deg, var(--ink) 50%, transparent 50%); }
+.mk-imp { border: 1.5px solid var(--ink); }
+.mk-opt { border: 1.5px dashed var(--ink-3); }
+.mk-side { border: 1.5px solid var(--ink-3); border-radius: 2px; transform: rotate(45deg); width: 8px; height: 8px; }
+
+/* Linha (mapa da trilha) */
+.board { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 28px; align-items: start; }
+@media (max-width: 980px) { .board { grid-template-columns: 1fr; } }
+.line { display: grid; }
+.station { position: relative; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; width: 100%; text-align: left; background: none; border: 0; border-radius: var(--r); padding: 0 10px 0 0; cursor: pointer; }
+.station:hover .st-title { text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
+.station.sel { background: var(--surface); box-shadow: inset 0 0 0 1px var(--rule); }
+.rail { position: relative; display: flex; justify-content: center; }
+.rail::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 3px; margin-left: -1.5px; background: var(--rule); }
+.station.done .rail::before { background: var(--accent); }
+.line > .station:first-child .rail::before, .line > .par:first-child .station:first-child .rail::before { top: 50%; }
+.dot { position: relative; z-index: 1; margin-top: 15px; width: 16px; height: 16px; border-radius: 50%; background: var(--surface); border: 2.5px solid var(--ink-3); display: grid; place-items: center; }
+.station.done .dot { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.station.done .dot .icon { width: 10px; height: 10px; stroke-width: 3.5; }
+.station.current .dot { border-color: var(--accent); box-shadow: 0 0 0 4px var(--accent-tint); }
+.st-body { display: grid; gap: 4px; padding: 11px 0 12px; min-width: 0; }
+.st-top { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+.st-n { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); flex: none; }
+.st-title { font-weight: 600; font-size: 15px; line-height: 1.3; min-width: 0; }
+.station.done .st-title { color: var(--ink-2); }
+.st-state { margin-left: auto; font-size: 12px; color: var(--accent); font-weight: 600; white-space: nowrap; }
+.st-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 12px; font-size: 12.5px; color: var(--ink-2); padding-left: 28px; }
+.mini { width: 56px; height: 3px; background: var(--sunken); border-radius: 2px; overflow: hidden; }
+.mini span { display: block; height: 100%; background: var(--accent); }
+.par { position: relative; }
+.par-cap { display: grid; grid-template-columns: 34px 1fr; gap: 8px; font-size: 12px; color: var(--ink-3); }
+.par-cap span:last-child { padding: 6px 0 0 28px; }
+.par-cap .rail::before { top: 0; }
+.par > .station .st-body { border-left: 2px solid var(--rule); padding-left: 12px; margin-left: 28px; }
+.par > .station .st-meta { padding-left: 28px; }
+.terminal { display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 8px; }
+.terminal .rail::before { background: var(--rule); }
+.terminal.reached .rail::before { background: var(--accent); }
+.term-mark { position: relative; z-index: 1; margin-top: 14px; width: 22px; height: 22px; border-radius: 5px; background: var(--ink); color: var(--surface); display: grid; place-items: center; }
+.terminal.reached .term-mark { background: var(--accent); color: var(--accent-ink); }
+.term-mark .icon { width: 13px; height: 13px; stroke-width: 2.4; }
+.term-body { padding: 14px 0 16px; }
+.term-body b { display: block; font-size: 15px; }
+.term-body span { font-size: 13px; color: var(--ink-3); }
+.offline { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--rule); display: grid; gap: 4px; }
+.offline h3 { font-size: 16px; }
+.offline p { font-size: 13px; color: var(--ink-3); margin-bottom: 6px; }
+.offline .rail::before { display: none; }
+.offline .dot { border-radius: 3px; transform: rotate(45deg); width: 13px; height: 13px; }
+.offline .station.done .dot .icon { transform: rotate(-45deg); }
+.offline .st-meta { padding-left: 0; }
+.offline .st-n { display: none; }
+
+/* Painel de aulas */
+.detail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + var(--bar-h) + 16px); max-height: calc(100vh - var(--bar-h) - 32px); display: flex; flex-direction: column; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; overflow: clip; min-width: 0; }
+@media (max-width: 980px) { .detail { position: static; max-height: none; } }
+.d-head, .d-tools { flex: none; }
+.d-head { padding: 24px 26px 18px; display: grid; gap: 10px; }
+.d-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 13px; color: var(--ink-2); }
+.d-step { font-family: var(--font-mono); font-size: 12.5px; color: var(--ink-3); }
+.d-when { color: var(--accent); font-weight: 600; }
+.d-head h2 { font-size: clamp(24px, 3vw, 32px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.d-why { color: var(--ink-2); max-width: 60ch; }
+.d-meta { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13px; color: var(--ink-3); }
+.d-meta b { color: var(--ink); font-weight: 600; }
+.d-prog { display: grid; grid-template-columns: 1fr auto; gap: 6px 14px; align-items: center; margin-top: 4px; }
+.d-bar { height: 6px; background: var(--sunken); border-radius: 3px; overflow: hidden; }
+.d-bar span { display: block; height: 100%; background: var(--accent); transition: width .4s cubic-bezier(.2,.8,.2,1); }
+.d-pct { font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.d-reward { grid-column: 1 / -1; font-size: 12.5px; color: var(--ink-3); }
+.d-prog.complete .d-reward { color: var(--accent); font-weight: 600; }
+.d-tools { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding: 12px 26px; border-block: 1px solid var(--rule); background: var(--bg); }
+.search { flex: 1; min-width: 180px; position: relative; }
+.search .icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: var(--ink-3); }
+.search input { width: 100%; font: inherit; font-size: 14px; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: 8px; padding: 8px 10px 8px 34px; }
+.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.toggle { position: relative; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; user-select: none; }
+.toggle input { position: absolute; left: 0; top: 0; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+.toggle .sw { width: 32px; height: 18px; border-radius: 9px; background: var(--rule); position: relative; transition: background .15s; }
+.toggle .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--surface); transition: transform .15s; }
+.toggle input:checked + .sw { background: var(--accent); }
+.toggle input:checked + .sw::after { transform: translateX(14px); }
+.toggle input:focus-visible + .sw { outline: 2px solid var(--accent); outline-offset: 2px; }
+.d-body { overflow-y: auto; padding: 0 26px 22px; }
+.grp + .grp { margin-top: 6px; }
+.grp-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; padding: 20px 0 8px; position: sticky; top: 0; background: var(--surface); z-index: 1; }
+.grp-head h3 { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.grp-count { font-size: 13px; color: var(--ink-3); }
+.grp-bonus { font-size: 12.5px; color: var(--ink-3); }
+.grp.complete .grp-bonus { color: var(--accent); }
+.grp-head .btn-text { margin-left: auto; }
+.grp-bar { height: 2px; background: var(--rule); overflow: hidden; }
+.grp-bar span { display: block; height: 100%; background: var(--accent); transition: width .3s; }
+.lessons { list-style: none; margin: 0; padding: 0; }
+.lesson + .lesson label { border-top: 1px solid var(--rule); }
+.lesson label { position: relative; user-select: none; display: grid; grid-template-columns: 20px 40px minmax(0, 1fr) auto; gap: 2px 12px; align-items: center; padding: 11px 6px; cursor: pointer; }
+.lesson label:hover { background: var(--bg); }
+.lesson input { position: absolute; left: 10px; top: 50%; width: 1px; height: 1px; margin: 0; opacity: 0; pointer-events: none; }
+.box { width: 20px; height: 20px; border-radius: 5px; border: 1.5px solid var(--ink-3); display: grid; place-items: center; color: var(--accent-ink); transition: background .12s, border-color .12s; }
+.box .icon { width: 13px; height: 13px; stroke-width: 3.2; opacity: 0; transform: scale(.5); transition: opacity .12s, transform .18s cubic-bezier(.3,1.5,.5,1); }
+.lesson input:checked + .box { background: var(--accent); border-color: var(--accent); }
+.lesson input:checked + .box .icon { opacity: 1; transform: scale(1); }
+.lesson input:focus-visible + .box { outline: 2px solid var(--accent); outline-offset: 2px; }
+.l-num { font-family: var(--font-mono); font-size: 12px; color: var(--ink-3); }
+.l-main { min-width: 0; display: grid; gap: 1px; }
+.l-title { font-weight: 500; font-size: 14.5px; line-height: 1.35; overflow-wrap: anywhere; }
+.l-sub { font-size: 12.5px; color: var(--ink-3); }
+.l-xp { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+.lesson.done .l-title { color: var(--ink-3); }
+.lesson.next .l-num { color: var(--accent); font-weight: 500; }
+.lesson.next .l-title { font-weight: 700; }
+.lesson.next .l-xp { color: var(--accent); }
+.empty { padding: 32px 0; color: var(--ink-3); font-size: 14px; }
+
+.d-hint { font-size: 12px; color: var(--ink-3); }
+@media (hover: none), (max-width: 980px) { .d-hint { display: none; } }
+.station, .detail { scroll-margin-top: calc(var(--bar-h) + 12px); }
+.line > .detail { margin: 4px 0 12px; }
+.stamps-more { grid-column: 1 / -1; display: flex; justify-content: center; }
+
+/* Carimbos */
+.stamps { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 28px 18px; }
+.stamp { margin: 0; display: grid; justify-items: center; align-content: start; gap: 10px; text-align: center; min-width: 0; }
+.stamp-svg { width: 116px; height: 116px; overflow: visible; }
+.stamp-svg .ring1 { fill: none; stroke: currentColor; stroke-width: 2.5; }
+.stamp-svg .ring2 { fill: none; stroke: currentColor; stroke-width: 1; }
+.stamp-svg .st-arc { fill: currentColor; font-family: var(--font-sans); font-weight: 800; font-size: 10px; letter-spacing: 1.2px; }
+.stamp-svg .st-foot { fill: currentColor; font-family: var(--font-mono); font-size: 7.5px; letter-spacing: 1.5px; }
+.stamp-svg .st-ic { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.stamp-svg .st-prog { fill: currentColor; font-family: var(--font-mono); font-size: 13px; font-weight: 500; }
+.stamp.won.ink-a { color: var(--accent); }
+.stamp.won.ink-b { color: var(--signal); }
+.stamp.won.ink-c { color: var(--ink-2); }
+.stamp.won .stamp-svg { filter: url(#rough); }
+.stamp.locked { color: var(--ink-3); }
+.stamp.locked .stamp-svg { opacity: .55; }
+.stamp.locked .ring1 { stroke-dasharray: 3 4; stroke-width: 1.5; }
+.stamp figcaption { display: grid; gap: 2px; }
+.stamp figcaption b { font-size: 14px; font-weight: 700; color: var(--ink); }
+.stamp figcaption span { font-size: 12.5px; color: var(--ink-3); line-height: 1.35; }
+
+/* Regras e rodapé */
+.rules { border-block: 1px solid var(--rule); }
+.rules summary { cursor: pointer; padding: 16px 0; font-weight: 700; font-size: 16px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+.rules summary::-webkit-details-marker { display: none; }
+.rules summary::after { content: "+"; font-weight: 400; font-size: 22px; color: var(--ink-3); }
+.rules[open] summary::after { content: "–"; }
+.rules-body { padding: 0 0 22px; display: grid; gap: 22px 40px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.rules-body h3 { font-size: 14px; margin-bottom: 8px; }
+.rules-body ul { margin: 0; padding: 0; list-style: none; font-size: 13.5px; color: var(--ink-2); }
+.rules-body li { display: flex; justify-content: space-between; gap: 12px; padding: 6px 0; border-top: 1px solid var(--rule); }
+.rules-body li b { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.rules-body li.note { display: block; color: var(--ink-3); }
+.foot { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; justify-content: space-between; color: var(--ink-3); font-size: 13px; }
+.danger { color: var(--signal); }
+
+/* Feedback */
+.toasts { position: fixed; right: max(16px, env(safe-area-inset-right, 0px)); top: calc(env(safe-area-inset-top, 0px) + var(--bar-h) + 12px); z-index: 50; display: grid; gap: 8px; width: min(340px, calc(100vw - 32px)); pointer-events: none; }
+@media (max-width: 760px) { .toasts { right: auto; left: 50%; transform: translateX(-50%); } }
+.toast { pointer-events: none; display: flex; align-items: center; gap: 12px; background: var(--ink); color: var(--bg); padding: 12px 14px; border-radius: 10px; box-shadow: 0 12px 32px -12px rgba(0,0,0,.45); animation: toastIn .25s cubic-bezier(.2,1,.3,1); font-size: 13.5px; }
+.toast .t-ic { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; border: 1.5px solid currentColor; flex: none; opacity: .9; }
+.toast .t-ic .icon { width: 15px; height: 15px; }
+.toast .t-body { flex: 1; min-width: 0; }
+.toast b { display: block; font-weight: 700; }
+.toast button { pointer-events: auto; background: none; border: 0; color: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-weight: 700; padding: 6px 2px; }
+.toast.level { background: var(--accent); color: var(--accent-ink); }
+.toast.level .t-ic { font-weight: 800; font-size: 15px; }
+@keyframes toastIn { from { transform: translateY(-8px); opacity: 0; } }
+.float-xp { position: fixed; z-index: 60; pointer-events: none; font-weight: 700; font-size: 13px; color: var(--accent); font-variant-numeric: tabular-nums; animation: floatUp .9s ease-out forwards; }
+@keyframes floatUp { 0% { transform: translateY(0); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-32px); opacity: 0; } }
+#confetti { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 65; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+
+/* ---------- Login (check-in) ---------- */
+body.locked > header, body.locked > main, body.locked > .toasts { display: none !important; }
+.gate { min-height: 100vh; min-height: 100dvh; display: grid; place-items: center; padding: 24px 16px; }
+.gate-card { width: 100%; max-width: 400px; background: var(--surface); border: 1px solid var(--rule); border-radius: 14px; overflow: hidden; }
+.gate-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 22px; background: var(--accent); color: var(--accent-ink); }
+.gate-top .mark { font-size: 15px; }
+.gate-top .mark-glyph { display: inline-grid; place-items: center; }
+.gate-code { font-family: var(--font-mono); font-size: 12.5px; opacity: .85; }
+.gate-tear { position: relative; height: 0; border-top: 2px dashed var(--rule); margin: 0 14px; }
+.gate-tear::before, .gate-tear::after { content: ""; position: absolute; top: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--bg); border: 1px solid var(--rule); }
+.gate-tear::before { left: -23px; } .gate-tear::after { right: -23px; }
+.gate-body { padding: 22px 22px 24px; display: grid; gap: 14px; }
+.gate-title { font-size: 26px; }
+.gate-sub { color: var(--ink-2); font-size: 14.5px; }
+.field { display: grid; gap: 6px; font-size: 13px; font-weight: 600; color: var(--ink-2); }
+.field input { font: inherit; font-size: 15px; font-weight: 400; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 8px; padding: 11px 12px; width: 100%; }
+.field input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.check { display: flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-2); cursor: pointer; }
+.check input { accent-color: var(--accent); width: 16px; height: 16px; }
+.gate-err { color: var(--signal); font-size: 13.5px; min-height: 1em; }
+.gate-err:empty { display: none; }
+.gate-btn { width: 100%; padding: 12px 16px; }
+.gate-btn[disabled] { opacity: .6; cursor: wait; }
+.gate-setup { font-size: 14px; color: var(--ink-2); display: grid; gap: 8px; }
+.gate-setup code { font-family: var(--font-mono); font-size: 12.5px; background: var(--sunken); padding: 1px 5px; border-radius: 4px; }
+
+/* ---------- Barra: sincronização e sair ---------- */
+button.sync { background: none; border: 1px solid transparent; border-radius: 8px; padding: 6px 8px; cursor: pointer; font: inherit; font-size: 12.5px; color: var(--ink-3); }
+button.sync:hover { border-color: var(--rule); color: var(--ink); }
+button.sync.err { color: var(--signal); }
+.who { display: inline-flex; align-items: center; gap: 4px; margin-left: auto; }
+.who-name { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.icon-btn { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 8px; border: 1px solid transparent; background: none; color: var(--ink-3); cursor: pointer; }
+.icon-btn:hover { border-color: var(--rule); color: var(--ink); }
+@media (max-width: 860px) { .who-name { display: none; } }
+
+/* ---------- Diálogo de sincronização ---------- */
+.dlg { width: min(460px, calc(100vw - 24px)); max-height: calc(100dvh - 48px); border: 1px solid var(--rule); border-radius: 14px; padding: 0; background: var(--surface); color: var(--ink); }
+.dlg::backdrop { background: rgba(10, 12, 16, .45); }
+.dlg-in { padding: 22px; display: grid; gap: 14px; }
+.dlg-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+.dlg h2 { font-size: 19px; }
+.dlg h3 { font-size: 15px; }
+.dlg p { color: var(--ink-2); font-size: 14px; }
+.dlg .hint { font-size: 13px; color: var(--ink-3); }
+.dlg .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.dlg .status { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--accent); font-weight: 600; }
+.dlg .status.off { color: var(--ink-3); }
+.dlg hr { border: 0; border-top: 1px solid var(--rule); margin: 4px 0; }
+.dlg .msg { font-size: 13.5px; }
+.dlg .msg.bad { color: var(--signal); }
+</style>
+<script src="config.js"></script>
+</head>
+<body class="locked">
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+      <feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7" result="n"/>
+      <feColorMatrix in="n" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -1.1 1.6" result="m"/>
+      <feComposite in="SourceGraphic" in2="m" operator="in"/>
+    </filter>
+  </defs>
+  <symbol id="i-flame" viewBox="0 0 24 24"><path d="M12 2.5c.5 3 4.8 5.3 4.8 10.2a4.8 4.8 0 0 1-9.6 0c0-2.2 1-3.6 2.1-4.6.2 1.6 1 2.6 2 2.9-.4-3 .2-5.8.7-8.5z"/></symbol>
+  <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3l2.8 5.8 6.2.8-4.5 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3L3 9.6l6.2-.8z"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9.5h8M8 12.5h5"/></symbol>
+  <symbol id="i-brain" viewBox="0 0 24 24"><path d="M9.5 4A3 3 0 0 0 6.5 7a3 3 0 0 0-2 5 3 3 0 0 0 2 5 3 3 0 0 0 5.5 1.5V5.5A3 3 0 0 0 9.5 4z"/><path d="M14.5 4a3 3 0 0 1 3 3 3 3 0 0 1 2 5 3 3 0 0 1-2 5 3 3 0 0 1-5.5 1.5"/></symbol>
+  <symbol id="i-bolt" viewBox="0 0 24 24"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+  <symbol id="i-crown" viewBox="0 0 24 24"><path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5z"/></symbol>
+  <symbol id="i-briefcase" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></symbol>
+  <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></symbol>
+  <symbol id="i-compass" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2 2 2 0 0 0 2 2h13"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></symbol>
+  <symbol id="i-mic" viewBox="0 0 24 24"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></symbol>
+  <symbol id="i-film" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 4v16M17 4v16M3 9h4M3 15h4M17 9h4M17 15h4"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24"><path d="M5 15c-1 1-1.5 3.5-1.5 5.5 2 0 4.5-.5 5.5-1.5M9 15l-2-2c1.5-5 5-9 12-10-1 7-5 10.5-10 12z"/><circle cx="14.5" cy="9.5" r="1.3"/></symbol>
+  <symbol id="i-trophy" viewBox="0 0 24 24"><path d="M8 4h8v5a4 4 0 0 1-8 0zM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 20h8"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1-.5-8 6 6 0 0 1 11.5 1.5A3.5 3.5 0 0 1 17.5 18z"/></symbol>
+  <symbol id="i-device" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+  <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M3 5h6a3 3 0 0 1 3 3v12a2 2 0 0 0-2-2H3zM21 5h-6a3 3 0 0 0-3 3v12a2 2 0 0 1 2-2h7z"/></symbol>
+  <symbol id="i-logout" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h10"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+  <symbol id="i-plane" viewBox="0 0 24 24"><path d="M10.5 13.5L3 11l1.5-1.5 7 1 4-4.5a2 2 0 0 1 3 3l-4.5 4 1 7L14 21.5l-2.5-7.5-3 3V19l-1.5 1.5-1-3.5-3.5-1L4 14.5h2.5z"/></symbol>
+</svg>
+
+<div class="gate" id="gate" hidden>
+  <form class="gate-card" id="gate-form" autocomplete="on" novalidate>
+    <div class="gate-top">
+      <span class="mark"><span class="mark-glyph"><svg class="icon" aria-hidden="true"><use href="#i-plane"/></svg></span><span>Fluency Quest</span></span>
+      <span class="gate-code">FQ · EN</span>
+    </div>
+    <div class="gate-body">
+      <div>
+        <h1 class="gate-title">Check-in</h1>
+        <p class="gate-sub" id="gate-sub">Entre para continuar sua trilha.</p>
+      </div>
+      <div id="gate-fields" style="display:grid;gap:14px">
+        <label class="field"><span>Usuário</span><input id="gate-user" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" required></label>
+        <label class="field"><span>Senha</span><input id="gate-pass" name="password" type="password" autocomplete="current-password" required></label>
+        <label class="check"><input type="checkbox" id="gate-remember" checked> Manter conectado neste aparelho</label>
+        <p class="gate-err" id="gate-err" role="alert"></p>
+        <button class="btn btn-primary gate-btn" id="gate-btn" type="submit">Entrar</button>
+      </div>
+      <div class="gate-setup" id="gate-setup" hidden>
+        <p>Falta criar sua senha.</p>
+        <p>Abra <a href="gerar-senha.html">gerar-senha.html</a>, preencha seus dados e substitua o arquivo <code>config.js</code> do repositório pelo que ele gerar.</p>
+      </div>
+    </div>
+    <div class="gate-tear" aria-hidden="true"></div>
+    <div class="gate-body" style="padding-top:14px;padding-bottom:16px"><p class="gate-sub" style="font-size:12.5px">Seu progresso fica salvo neste navegador e, se você conectar o GitHub, também na sua conta.</p></div>
+  </form>
+</div>
+
+<dialog class="dlg" id="sync-dlg" aria-labelledby="sync-title">
+  <div class="dlg-in">
+    <div class="dlg-head">
+      <h2 id="sync-title">Salvar entre aparelhos</h2>
+      <button type="button" class="icon-btn" id="sync-close" aria-label="Fechar"><svg class="icon" aria-hidden="true"><use href="#i-x"/></svg></button>
+    </div>
+    <p>Seu progresso sempre fica salvo neste navegador. Para ter o mesmo progresso no celular e no computador, conecte um token do GitHub: o site guarda tudo num gist secreto da sua conta, sem banco de dados.</p>
+    <div id="sync-on-box" hidden>
+      <p class="status"><svg class="icon" aria-hidden="true"><use href="#i-cloud"/></svg><span id="sync-status">Conectado ao GitHub</span></p>
+      <div class="row" style="margin-top:10px">
+        <button type="button" class="btn btn-primary" id="sync-now">Sincronizar agora</button>
+        <button type="button" class="btn btn-line" id="sync-off">Desconectar</button>
+      </div>
+    </div>
+    <div id="sync-off-box" style="display:grid;gap:10px">
+      <label class="field"><span>Token do GitHub</span><input id="sync-token" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>
+      <p class="hint">No GitHub: Settings › Developer settings › Personal access tokens › Fine-grained tokens. Em “Account permissions”, dê a permissão Gists: Read and write. O token fica só neste aparelho.</p>
+      <div class="row"><button type="button" class="btn btn-primary" id="sync-connect">Conectar</button></div>
+    </div>
+    <p class="msg" id="sync-msg" role="status"></p>
+    <hr>
+    <h3>Backup</h3>
+    <p class="hint">Um arquivo com todo o seu progresso, para guardar ou levar para outro navegador.</p>
+    <div class="row">
+      <button type="button" class="btn btn-line" id="bk-export">Baixar backup</button>
+      <button type="button" class="btn btn-line" id="bk-import-btn">Restaurar backup</button>
+      <input type="file" id="bk-import" accept=".json,application/json" hidden>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* ---------- Login sem servidor ----------
+   A senha nunca fica no código: só um hash PBKDF2 dela, em config.js.
+   Isso é um portão de privacidade para uso pessoal, não segurança de banco. */
+(function () {
+  'use strict';
+  var C = window.FQ_CONFIG || {};
+  var SES = 'fq-session';
+  var gate = document.getElementById('gate');
+  var hashCfg = String(C.senhaHash || '').trim().toLowerCase();
+  var userCfg = String(C.usuario || '').trim().toLowerCase();
+  var marker = userCfg + ':' + hashCfg.slice(0, 20);
+
+  function read(k) { try { return localStorage.getItem(k) || sessionStorage.getItem(k); } catch (e) { return null; } }
+  function unlock() {
+    gate.hidden = true;
+    document.body.classList.remove('locked');
+    window.FQ_AUTH = true;
+    document.dispatchEvent(new Event('fq-login'));
+  }
+  window.FQ_logout = function () {
+    try { localStorage.removeItem(SES); sessionStorage.removeItem(SES); } catch (e) {}
+    location.reload();
+  };
+
+  async function derive(user, pass) {
+    var enc = new TextEncoder();
+    var key = await crypto.subtle.importKey('raw', enc.encode(pass), 'PBKDF2', false, ['deriveBits']);
+    var bits = await crypto.subtle.deriveBits({ name: 'PBKDF2', salt: enc.encode('fluency-quest:' + user), iterations: 250000, hash: 'SHA-256' }, key, 256);
+    return Array.from(new Uint8Array(bits)).map(function (b) { return b.toString(16).padStart(2, '0'); }).join('');
+  }
+
+  if (!hashCfg || !userCfg) {
+    document.getElementById('gate-fields').hidden = true;
+    document.getElementById('gate-setup').hidden = false;
+    document.getElementById('gate-sub').textContent = 'Primeiro acesso.';
+    gate.hidden = false;
+    return;
+  }
+  if (read(SES) === marker) { unlock(); return; }
+  gate.hidden = false;
+  if (C.nome) document.getElementById('gate-sub').textContent = 'Olá, ' + C.nome + '. Entre para continuar sua trilha.';
+  setTimeout(function () { document.getElementById('gate-user').focus(); }, 0);
+
+  var form = document.getElementById('gate-form'), err = document.getElementById('gate-err'), btn = document.getElementById('gate-btn');
+  form.addEventListener('submit', async function (ev) {
+    ev.preventDefault();
+    var u = document.getElementById('gate-user').value.trim().toLowerCase();
+    var p = document.getElementById('gate-pass').value;
+    if (!u || !p) { err.textContent = 'Preencha usuário e senha.'; return; }
+    if (!window.crypto || !crypto.subtle) { err.textContent = 'Este navegador bloqueou a verificação da senha. Abra o site pelo link https do GitHub Pages.'; return; }
+    btn.disabled = true; btn.textContent = 'Verificando…'; err.textContent = '';
+    try {
+      var h = await derive(u, p);
+      if (u === userCfg && h === hashCfg) {
+        try { (document.getElementById('gate-remember').checked ? localStorage : sessionStorage).setItem(SES, marker); } catch (e) {}
+        unlock();
+        return;
+      }
+      await new Promise(function (r) { setTimeout(r, 900); });
+      err.textContent = 'Usuário ou senha incorretos.';
+      document.getElementById('gate-pass').select();
+    } catch (e) {
+      err.textContent = 'Não foi possível verificar a senha neste navegador.';
+    }
+    btn.disabled = false; btn.textContent = 'Entrar';
+  });
+})();
+</script>
+
+<header class="bar gutter">
+  <div class="container">
+    <div class="mark"><span class="mark-glyph"><svg class="icon"><use href="#i-plane"/></svg></span><span class="mark-text">Fluency Quest</span></div>
+    <div class="lvl" id="hud-lvl"></div>
+    <div class="hstats" id="hud-pills"></div>
+    <div class="who"><button type="button" class="sync" id="sync" aria-live="polite"></button><span class="who-name" id="who-name"></span><button type="button" class="icon-btn" id="logout" title="Sair" aria-label="Sair"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg></button></div>
+  </div>
+</header>
+
+<main class="container gutter">
+  <section class="top" aria-label="Missões">
+    <article class="pass" id="mission"></article>
+    <section class="week" id="weekly"></section>
+  </section>
+
+  <section class="figures" id="stats" aria-label="Números"></section>
+
+  <section class="sec" aria-labelledby="trail-title">
+    <div class="sec-head">
+      <div style="display:grid;gap:6px">
+        <h2 id="trail-title">A linha</h2>
+        <p>Do First Steps até trabalhar com gringos. Escolha uma estação para ver e marcar as aulas.</p>
+      </div>
+      <div class="legend" aria-label="Legenda de importância">
+        <span class="imp"><span class="mk mk-ess"></span>Essencial</span>
+        <span class="imp"><span class="mk mk-mi"></span>Muito importante</span>
+        <span class="imp"><span class="mk mk-imp"></span>Importante</span>
+        <span class="imp"><span class="mk mk-opt"></span>Opcional</span>
+      </div>
+    </div>
+    <div class="board">
+      <nav class="line" id="trail" aria-label="Estações da trilha"></nav>
+      <section class="detail" id="detail"></section>
+    </div>
+  </section>
+
+  <section class="sec" aria-labelledby="badges-title">
+    <div class="sec-head">
+      <div style="display:grid;gap:6px">
+        <h2 id="badges-title">Passaporte</h2>
+        <p>Cada conquista vira um carimbo.</p>
+      </div>
+      <p id="badges-sub"></p>
+    </div>
+    <div class="stamps" id="badges"></div>
+  </section>
+
+  <details class="rules">
+    <summary>Como funciona o XP</summary>
+    <div class="rules-body">
+      <div><h3>Aulas</h3><ul>
+        <li>Aula da grade principal <b>+10 XP</b></li>
+        <li>Aula complementar <b>+15 XP</b></li>
+        <li>Missão de prática (passos 10 e 12) <b>+20 XP</b></li>
+        <li>Unidade inteira concluída <b>+25 XP</b></li>
+      </ul></div>
+      <div><h3>Estações concluídas</h3><ul>
+        <li>Essencial <b>+300 XP</b></li>
+        <li>Muito importante <b>+200 XP</b></li>
+        <li>Importante <b>+120 XP</b></li>
+        <li>Opcional <b>+80 XP</b></li>
+        <li>Missão extra <b>+100 XP</b></li>
+      </ul></div>
+      <div><h3>Hábitos</h3><ul>
+        <li>Conversação em grupo <b>+30 XP</b></li>
+        <li>MemHack no dia <b>+5 XP</b></li>
+        <li>Meta da semana cumprida <b>+100 XP</b></li>
+        <li class="note">A meta da semana também dá 1 escudo. Ele salva sua sequência se você perder um dia. Você guarda até 2.</li>
+      </ul></div>
+    </div>
+  </details>
+
+  <div class="foot" id="foot"></div>
+</main>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<canvas id="confetti" hidden></canvas>
+
+
+<script>
+(function () {
+'use strict';
+var COURSES = {"fs":{"id":"fs","name":"First Steps","kind":"main","groups":[{"label":"Unidade 1","lessons":[{"k":"m1","n":1,"t":"Hey, welcome! 🚀","ty":"Welcome"},{"k":"m2","n":2,"t":"Level Check","ty":"Level Check"},{"k":"m3","n":3,"t":"Say Hello","ty":"Vocabulary"},{"k":"m4","n":4,"t":"My Name Is...","ty":"Language"},{"k":"m5","n":5,"t":"First Meeting","ty":"Comprehension"},{"k":"m6","n":6,"t":"Greeting Sounds","ty":"Pronunciation"},{"k":"m7","n":7,"t":"Real Greetings","ty":"Practical English"}]},{"label":"Unidade 2","lessons":[{"k":"m8","n":8,"t":"Feeling Words","ty":"Vocabulary"},{"k":"m9","n":9,"t":"How Are You?","ty":"Language"},{"k":"m10","n":10,"t":"Mood Check","ty":"Comprehension"},{"k":"m11","n":11,"t":"Sound Natural","ty":"Pronunciation"},{"k":"m12","n":12,"t":"Real Answers","ty":"Practical English"}]},{"label":"Unidade 3","lessons":[{"k":"m13","n":13,"t":"My Identity","ty":"Vocabulary"},{"k":"m14","n":14,"t":"About Me","ty":"Language"},{"k":"m15","n":15,"t":"Meet Me","ty":"Comprehension"},{"k":"m16","n":16,"t":"Stress and Rhythm","ty":"Pronunciation"},{"k":"m17","n":17,"t":"Quick Introductions","ty":"Practical English"}]},{"label":"Unidade 4","lessons":[{"k":"m18","n":18,"t":"Digits","ty":"Vocabulary"},{"k":"m19","n":19,"t":"Personal Details","ty":"Language"},{"k":"m20","n":20,"t":"Numbers Around You","ty":"Comprehension"},{"k":"m21","n":21,"t":"Thirteen vs Thirty","ty":"Pronunciation"},{"k":"m22","n":22,"t":"Numbers in Real Life","ty":"Practical English"}]},{"label":"Unidade 5","lessons":[{"k":"m23","n":23,"t":"Daily Life","ty":"Vocabulary"},{"k":"m24","n":24,"t":"Simple Routine","ty":"Language"},{"k":"m25","n":25,"t":"A Simple Day","ty":"Comprehension"},{"k":"m26","n":26,"t":"Clear End Sounds","ty":"Pronunciation"},{"k":"m27","n":27,"t":"Talk About Your Day","ty":"Practical English"}]},{"label":"Unidade 6","lessons":[{"k":"m28","n":28,"t":"Foods & Drinks","ty":"Vocabulary"},{"k":"m29","n":29,"t":"Polite Requests","ty":"Language"},{"k":"m30","n":30,"t":"At the Café","ty":"Comprehension"},{"k":"m31","n":31,"t":"Polite Voice","ty":"Pronunciation"},{"k":"m32","n":32,"t":"Order Like This","ty":"Practical English"}]},{"label":"Unidade 7","lessons":[{"k":"m33","n":33,"t":"Everyday Objects","ty":"Vocabulary"},{"k":"m34","n":34,"t":"Do You Have...?","ty":"Language"},{"k":"m35","n":35,"t":"Lost and Found","ty":"Comprehension"},{"k":"m36","n":36,"t":"Do You","ty":"Pronunciation"},{"k":"m37","n":37,"t":"My Things","ty":"Practical English"}]},{"label":"Unidade 8","lessons":[{"k":"m38","n":38,"t":"My Family","ty":"Vocabulary"},{"k":"m39","n":39,"t":"Describing Family","ty":"Language"},{"k":"m40","n":40,"t":"Family Moment","ty":"Comprehension"},{"k":"m41","n":41,"t":"TH Practice","ty":"Pronunciation"},{"k":"m42","n":42,"t":"Family Talk","ty":"Practical English"}]}],"desc":"para quem começa do zero, este nível foca no inglês prático. Ensina frases essenciais para se apresentar, falar da rotina e fazer pedidos com confiança."},"ba":{"id":"ba","name":"Basic","kind":"main","groups":[{"label":"Unidade 1","lessons":[{"k":"m43","n":43,"t":"Listening to a Scene About Music and Emotions","ty":"Comprehension Practice"},{"k":"m44","n":44,"t":"Using Common Contractions in Spoken English","ty":"Pronunciation Hacks"},{"k":"m45","n":45,"t":"Making Simple Present Questions with Do","ty":"Grammar Hacks — Part I"},{"k":"m46","n":46,"t":"Asking Questions with Wh-Words","ty":"Grammar Hacks — Part II"},{"k":"m47","n":47,"t":"Using Informal Goodbyes in English","ty":"Immersion Time"},{"k":"m48","n":48,"t":"Talking About Professions and Family Members","ty":"Vocab Rocket — Part I"},{"k":"m49","n":49,"t":"Describing Your Home and Furniture","ty":"Vocab Rocket — Part II"}]},{"label":"Unidade 2","lessons":[{"k":"m50","n":50,"t":"Listening to a Scene from “The Circle”","ty":"Comprehension Practice"},{"k":"m51","n":51,"t":"Using Simple Present in Affirmative and Negative Sentences","ty":"Grammar Hacks — Part I"},{"k":"m52","n":52,"t":"Making Questions with Does and WH-Words","ty":"Grammar Hacks — Part II"},{"k":"m53","n":53,"t":"Expressing Gratitude in Different Ways","ty":"Immersion Time"},{"k":"m54","n":54,"t":"Pronouncing the Schwa Sound","ty":"Pronunciation Hacks"},{"k":"m55","n":55,"t":"Using Vocabulary for Daily Routines","ty":"Vocab Rocket"}]},{"label":"Unidade 3","lessons":[{"k":"m56","n":56,"t":"Listening Practice: Talking About Pets","ty":"Comprehension Practice"},{"k":"m57","n":57,"t":"Using Verb To Be in Affirmative and Negative Sentences","ty":"Grammar Hacks — Part I"},{"k":"m58","n":58,"t":"Describing Current Actions with Present Continuous","ty":"Grammar Hacks — Part II"},{"k":"m59","n":59,"t":"Responding to Thank You in Natural Ways","ty":"Immersion Time"},{"k":"m60","n":60,"t":"Pronouncing the TH Sound in English","ty":"Pronunciation Hacks"},{"k":"m61","n":61,"t":"Talking About Pet Care and Daily Actions","ty":"Vocab Rocket"}]},{"label":"Unidade 4","lessons":[{"k":"m62","n":62,"t":"Listening to a Scene About Social Media and Influence","ty":"Comprehension Practice"},{"k":"m63","n":63,"t":"Using Present Continuous for Future Plans","ty":"Grammar Hacks — Part I"},{"k":"m64","n":64,"t":"Using Verbs with Gerunds and Infinitives","ty":"Grammar Hacks — Part II"},{"k":"m65","n":65,"t":"Clarifying and Asking for Help in Conversations","ty":"Immersion Time"},{"k":"m66","n":66,"t":"Practicing Linking Sounds in English","ty":"Pronunciation Hacks"},{"k":"m67","n":67,"t":"Talking About Clothes and Dress Codes","ty":"Vocab Rocket"}]},{"label":"Unidade 5","lessons":[{"k":"m68","n":68,"t":"Listening to a Scene About Virtual Reality","ty":"Comprehension Practice"},{"k":"m69","n":69,"t":"Using Collocations with Get, Have and Take","ty":"Grammar Hacks — Part I"},{"k":"m70","n":70,"t":"Using Possessive Adjectives and Pronouns","ty":"Grammar Hacks — Part II"},{"k":"m71","n":71,"t":"Practicing Basic Questions and Small Talk","ty":"Immersion Time"},{"k":"m72","n":72,"t":"Practicing Reductions in Spoken Questions","ty":"Pronunciation Hacks"},{"k":"m73","n":73,"t":"Describing Clothes, Fabrics, and Fit","ty":"Vocab Rocket"}]},{"label":"Unidade 6","lessons":[{"k":"m74","n":74,"t":"Understanding Prejudice and Inclusion","ty":"Comprehension Practice"},{"k":"m75","n":75,"t":"Making Simple Requests with Can and May","ty":"Grammar Hacks — Part I"},{"k":"m76","n":76,"t":"Making Polite Requests with Could","ty":"Grammar Hacks — Part II"},{"k":"m77","n":77,"t":"Accepting and Refusing Invitations","ty":"Immersion Time"},{"k":"m78","n":78,"t":"Using Common Reductions in English","ty":"Pronunciation Hacks"},{"k":"m79","n":79,"t":"Talking About Countries and Nationalities","ty":"Vocab Rocket"}]},{"label":"Unidade 7","lessons":[{"k":"m80","n":80,"t":"Describing Changes in a Story","ty":"Comprehension Practice"},{"k":"m81","n":81,"t":"Using Regular Verbs in the Past","ty":"Grammar Hacks — Part I"},{"k":"m82","n":82,"t":"Making Negative Sentences and Questions in the Past","ty":"Grammar Hacks — Part II"},{"k":"m83","n":83,"t":"Expressing Cultural Reactions","ty":"Immersion Time"},{"k":"m84","n":84,"t":"Pronouncing -ED Endings","ty":"Pronunciation Hacks"},{"k":"m85","n":85,"t":"Talking About Hobbies and Free Time","ty":"Vocab Rocket"}]},{"label":"Unidade 8","lessons":[{"k":"m86","n":86,"t":"Talking About Hopes and Expectations","ty":"Comprehension Practice"},{"k":"m87","n":87,"t":"Using Was and Were in the Past","ty":"Grammar Hacks — Part I"},{"k":"m88","n":88,"t":"Talking About Irregular Verbs in the Past","ty":"Grammar Hacks — Part II"},{"k":"m89","n":89,"t":"Expressing Likes and Reactions","ty":"Immersion Time"},{"k":"m90","n":90,"t":"Pronouncing Reductions in Real Speech","ty":"Pronunciation Hacks"},{"k":"m91","n":91,"t":"Talking About School and Education","ty":"Vocab Rocket"}]},{"label":"Unidade 9","lessons":[{"k":"m92","n":92,"t":"Talking About Sustainable Living","ty":"Comprehension Practice"},{"k":"m93","n":93,"t":"Using Will to Talk About the Future","ty":"Grammar Hacks — Part I"},{"k":"m94","n":94,"t":"Talking About Future Plans with Going To","ty":"Grammar Hacks — Part II"},{"k":"m95","n":95,"t":"Reacting and Congratulating in English","ty":"Immersion Time"},{"k":"m96","n":96,"t":"Practicing Contractions with n't","ty":"Pronunciation Hacks"},{"k":"m97","n":97,"t":"Talking About Food and Meals","ty":"Vocab Rocket"}]},{"label":"Unidade 10","lessons":[{"k":"m98","n":98,"t":"Understanding Lyrics and Music Scenes","ty":"Comprehension Practice"},{"k":"m99","n":99,"t":"Using If and When in Real Situations","ty":"Grammar Hacks — Part I"},{"k":"m100","n":100,"t":"Using Phrasal Verbs in Daily Conversations","ty":"Grammar Hacks — Part II"},{"k":"m101","n":101,"t":"Using Get in Multiple Meanings","ty":"Immersion Time"},{"k":"m102","n":102,"t":"Practicing Reductions: and, or & of","ty":"Pronunciation Hacks"},{"k":"m103","n":103,"t":"Talking About Music and Instruments","ty":"Vocab Rocket"}]},{"label":"Unidade 11","lessons":[{"k":"m104","n":104,"t":"Understanding Technology and Design Tricks","ty":"Comprehension Practice"},{"k":"m105","n":105,"t":"Using There Is / There Are for Description","ty":"Grammar Hacks — Part I"},{"k":"m106","n":106,"t":"Talking About the Past and Future with There Was / There Will Be","ty":"Grammar Hacks — Part II"},{"k":"m107","n":107,"t":"Starting Conversations with Icebreaker Questions","ty":"Immersion Time"},{"k":"m108","n":108,"t":"Practicing Reductions like Yousta, Couldja & Hafta","ty":"Pronunciation Hacks"},{"k":"m109","n":109,"t":"Describing People and Things with Adjectives","ty":"Vocab Rocket"}]},{"label":"Unidade 12","lessons":[{"k":"m110","n":110,"t":"Understanding an Emotional Scene About Art","ty":"Comprehension Practice"},{"k":"m111","n":111,"t":"Using Object Pronouns in Sentences","ty":"Grammar Hacks — Part I"},{"k":"m112","n":112,"t":"Using Reflexive Pronouns in Context","ty":"Grammar Hacks — Part II"},{"k":"m113","n":113,"t":"Writing Emails in English","ty":"Immersion Time"},{"k":"m114","n":114,"t":"Pronouncing the 'll Contraction","ty":"Pronunciation Hacks"},{"k":"m115","n":115,"t":"Using Similar Verbs Like Do, Make, Say and Tell","ty":"Vocab Rocket"}]},{"label":"Unidade 13","lessons":[{"k":"m116","n":116,"t":"Understanding AI in Daily Conversations","ty":"Comprehension Practice"},{"k":"m117","n":117,"t":"Using Prepositions of Place and Time","ty":"Grammar Hacks — Part I"},{"k":"m118","n":118,"t":"Using From, To and For in Real Contexts","ty":"Grammar Hacks — Part II"},{"k":"m119","n":119,"t":"Using Ain’t in Informal English","ty":"Immersion Time"},{"k":"m120","n":120,"t":"Pronouncing Short Vowel Sounds","ty":"Pronunciation Hacks"},{"k":"m121","n":121,"t":"Talking About Technology and Devices","ty":"Vocab Rocket"}]},{"label":"Unidade 14","lessons":[{"k":"m122","n":122,"t":"Understanding a Scene About Hotels and Travel","ty":"Comprehension Practice"},{"k":"m123","n":123,"t":"Using Modals Like Would, Should, Must and Might","ty":"Grammar Hacks — Part I"},{"k":"m124","n":124,"t":"Talking About Past Habits with Used To and Would","ty":"Grammar Hacks — Part II"},{"k":"m125","n":125,"t":"Using Exclamations Like Yay, Oops and Yuck","ty":"Immersion Time"},{"k":"m126","n":126,"t":"Practicing Long Vowel Sounds in English","ty":"Pronunciation Hacks"},{"k":"m127","n":127,"t":"Talking About Travel and Transportation","ty":"Vocab Rocket"}]},{"label":"Unidade 15","lessons":[{"k":"m128","n":128,"t":"Listening to Real English About Resilience","ty":"Comprehension Practice"},{"k":"m129","n":129,"t":"Using the Past Continuous for Background Actions","ty":"Grammar Hacks — Part I"},{"k":"m130","n":130,"t":"Using the Second Conditional for Hypothetical Situations","ty":"Grammar Hacks — Part II"},{"k":"m131","n":131,"t":"Using Informal Expressions and Reactions in English","ty":"Immersion Time"},{"k":"m132","n":132,"t":"Practicing English Rhythm and Contractions","ty":"Pronunciation Hacks"},{"k":"m133","n":133,"t":"Talking About Hobbies and Free Time Activities","ty":"Vocab Rocket"}]}],"desc":"aprenda a falar sobre o passado e planos futuros. Domine o vocabulário para descrever experiências, lidar com viagens e conversar sobre temas do cotidiano."},"in":{"id":"in","name":"Intermediate","kind":"main","groups":[{"label":"Unidade 1","lessons":[{"k":"m134","n":134,"t":"Practicing Small Talk with Real-Life Sentences","ty":"Comprehension Practice"},{"k":"m135","n":135,"t":"Using Comparatives with More, Less and -er","ty":"Grammar Hacks — Part I"},{"k":"m136","n":136,"t":"Using Superlatives with The Most, The Least and -est","ty":"Grammar Hacks — Part II"},{"k":"m137","n":137,"t":"Talking About Culture Shock and Adaptation","ty":"Immersion Time"},{"k":"m138","n":138,"t":"Using Phrasal Verbs to Talk About Fitting In","ty":"Language Hacks"},{"k":"m139","n":139,"t":"Using Gerunds and Talking About Travel Habits","ty":"Writing Practice"},{"k":"m140","n":140,"t":"Immigration and Customs Conversation","ty":"Pronunciation Hacks"}]},{"label":"Unidade 2","lessons":[{"k":"m141","n":141,"t":"Practicing Small Talk in Real Situations","ty":"Comprehension Practice"},{"k":"m142","n":142,"t":"Using Phrasal Verbs to Talk About Life Situations","ty":"Grammar Hacks — Part I"},{"k":"m143","n":143,"t":"Exploring Different Uses of the Verb “Get”","ty":"Grammar Hacks — Part II"},{"k":"m144","n":144,"t":"Talking About Culture Shock and Stereotypes","ty":"Immersion Time"},{"k":"m145","n":145,"t":"Learning Tips: Language Immersion and Vocabulary","ty":"Language Hacks"},{"k":"m146","n":146,"t":"Humor and Social Media","ty":"Writing Practice"},{"k":"m147","n":147,"t":"College Life and Burnout","ty":"Pronunciation Hacks"}]},{"label":"Unidade 3","lessons":[{"k":"m148","n":148,"t":"City Tour and Daily Life","ty":"Comprehension Practice"},{"k":"m149","n":149,"t":"Using Present Perfect with Regular Verbs","ty":"Grammar Hacks — Part I"},{"k":"m150","n":150,"t":"Using Present Perfect with Irregular Verbs","ty":"Grammar Hacks — Part II"},{"k":"m151","n":151,"t":"Talking About Housing and Shared Living","ty":"Immersion Time"},{"k":"m152","n":152,"t":"Using Phrasal Verbs with “Move”","ty":"Language Hacks"},{"k":"m153","n":153,"t":"Buying and Rebuying Games","ty":"Writing Practice"},{"k":"m154","n":154,"t":"Apartment Hunting Dialogue","ty":"Pronunciation Hacks"}]},{"label":"Unidade 4","lessons":[{"k":"m155","n":155,"t":"Small Talk: At the Coffee Shop","ty":"Comprehension Practice"},{"k":"m156","n":156,"t":"Using Present Perfect: Already, Just and Yet","ty":"Grammar Hacks — Part I"},{"k":"m157","n":157,"t":"Using Present Perfect Continuous","ty":"Grammar Hacks — Part II"},{"k":"m158","n":158,"t":"Eating Out and Food Habits","ty":"Immersion Time"},{"k":"m159","n":159,"t":"Eating Out and Sharing Food","ty":"Language Hacks"},{"k":"m160","n":160,"t":"Talking About Unusual Transportation","ty":"Writing Practice"},{"k":"m161","n":161,"t":"Using Everyday Expressions","ty":"Pronunciation Hacks"}]},{"label":"Unidade 5","lessons":[{"k":"m162","n":162,"t":"British English Expressions","ty":"Comprehension Practice"},{"k":"m163","n":163,"t":"Talking About Abilities with Be Able To, Might and Would","ty":"Grammar Hacks — Part I"},{"k":"m164","n":164,"t":"Describing with Verbs of the Senses","ty":"Grammar Hacks — Part II"},{"k":"m165","n":165,"t":"Expressions Around the World","ty":"Immersion Time"},{"k":"m166","n":166,"t":"English as a Lingua Franca","ty":"Language Hacks"},{"k":"m167","n":167,"t":"Natural Beauty Hacks","ty":"Writing Practice"},{"k":"m168","n":168,"t":"Checking in at a Hotel","ty":"Pronunciation Hacks"}]},{"label":"Unidade 6","lessons":[{"k":"m169","n":169,"t":"Studio Inventory","ty":"Comprehension Practice"},{"k":"m170","n":170,"t":"Expressing Preferences with Would Rather and Had Better","ty":"Grammar Hacks — Part I"},{"k":"m171","n":171,"t":"Using Phrasal Verbs in Everyday Contexts","ty":"Grammar Hacks — Part II"},{"k":"m172","n":172,"t":"Vacation Time and Getaways","ty":"Immersion Time"},{"k":"m173","n":173,"t":"Outdoor Activities and Study Strategies","ty":"Language Hacks"},{"k":"m174","n":174,"t":"Humor and Irony","ty":"Writing Practice"},{"k":"m175","n":175,"t":"Camping Dialogue with Ghost Stories","ty":"Pronunciation Hacks"}]},{"label":"Unidade 7","lessons":[{"k":"m176","n":176,"t":"Korean Cuisine","ty":"Comprehension Practice"},{"k":"m177","n":177,"t":"Talking About Past Events with Past Perfect","ty":"Grammar Hacks — Part I"},{"k":"m178","n":178,"t":"Using Past Perfect Continuous for Ongoing Past Actions","ty":"Grammar Hacks — Part II"},{"k":"m179","n":179,"t":"Holiday Spirit","ty":"Immersion Time"},{"k":"m180","n":180,"t":"Learning and Intercultural Mindset","ty":"Language Hacks"},{"k":"m181","n":181,"t":"It’s a New Trend!","ty":"Writing Practice"},{"k":"m182","n":182,"t":"New Year’s Eve Celebration","ty":"Pronunciation Hacks"}]},{"label":"Unidade 8","lessons":[{"k":"m183","n":183,"t":"Catching Up","ty":"Comprehension Practice"},{"k":"m184","n":184,"t":"Modals in the Past: Could’ve, Should’ve, Would’ve","ty":"Grammar Hacks — Part I"},{"k":"m185","n":185,"t":"Third Conditional: Unreal Past Situations","ty":"Grammar Hacks — Part II"},{"k":"m186","n":186,"t":"Nightlife","ty":"Immersion Time"},{"k":"m187","n":187,"t":"Learning Styles and Study Tips","ty":"Language Hacks"},{"k":"m188","n":188,"t":"Falling Stars","ty":"Writing Practice"},{"k":"m189","n":189,"t":"Reunion with a Famous Friend","ty":"Pronunciation Hacks"}]},{"label":"Unidade 9","lessons":[{"k":"m190","n":190,"t":"American Beginner","ty":"Comprehension Practice"},{"k":"m191","n":191,"t":"Gerund vs. Infinitive: Let Me Explain","ty":"Grammar Hacks — Part I"},{"k":"m192","n":192,"t":"Relative Clauses: It’s Where I Go","ty":"Grammar Hacks — Part II"},{"k":"m193","n":193,"t":"Making Extra Bucks","ty":"Immersion Time"},{"k":"m194","n":194,"t":"About Thinking","ty":"Language Hacks"},{"k":"m195","n":195,"t":"Claus Clean Cleanse","ty":"Writing Practice"},{"k":"m196","n":196,"t":"The Aisle Seat","ty":"Pronunciation Hacks"}]},{"label":"Unidade 10","lessons":[{"k":"m197","n":197,"t":"Brazilian Intermediate","ty":"Comprehension Practice"},{"k":"m198","n":198,"t":"Talking About the Future: Future Continuous","ty":"Grammar Hacks — Part I"},{"k":"m199","n":199,"t":"Future Perfect and Future Perfect Continuous","ty":"Grammar Hacks — Part II"},{"k":"m200","n":200,"t":"Best Years of Our Lives","ty":"Immersion Time"},{"k":"m201","n":201,"t":"Brazilian Accent and Intelligibility","ty":"Language Hacks"},{"k":"m202","n":202,"t":"Charlotte Goes to Mars","ty":"Writing Practice"},{"k":"m203","n":203,"t":"No Backsies","ty":"Pronunciation Hacks"}]},{"label":"Unidade 11","lessons":[{"k":"m204","n":204,"t":"Used Car","ty":"Comprehension Practice"},{"k":"m205","n":205,"t":"Reported Speech: That’s What She Said","ty":"Grammar Hacks — Part I"},{"k":"m206","n":206,"t":"Linking Words: Moving On...","ty":"Grammar Hacks — Part II"},{"k":"m207","n":207,"t":"Riding Around","ty":"Immersion Time"},{"k":"m208","n":208,"t":"All Cleared Up","ty":"Language Hacks"},{"k":"m209","n":209,"t":"Freezie to Eskimos","ty":"Writing Practice"},{"k":"m210","n":210,"t":"What The Hell Is That?","ty":"Pronunciation Hacks"}]},{"label":"Unidade 12","lessons":[{"k":"m211","n":211,"t":"Word Game","ty":"Comprehension Practice"},{"k":"m212","n":212,"t":"Passive Voice: Let’s Get It Done","ty":"Grammar Hacks — Part I"},{"k":"m213","n":213,"t":"Agreement: So Do I!","ty":"Grammar Hacks — Part II"},{"k":"m214","n":214,"t":"Citizen of the World","ty":"Immersion Time"},{"k":"m215","n":215,"t":"Complex Vocabulary","ty":"Language Hacks"},{"k":"m216","n":216,"t":"Bee Costume","ty":"Writing Practice"},{"k":"m217","n":217,"t":"Do You Mean “Chameleon”?","ty":"Pronunciation Hacks"}]},{"label":"Unidade 13","lessons":[{"k":"m218","n":218,"t":"Three Nurses","ty":"Comprehension Practice"},{"k":"m219","n":219,"t":"So Many Questions","ty":"Grammar Hacks — Part I"},{"k":"m220","n":220,"t":"You’re a Volunteer, Aren’t You?","ty":"Grammar Hacks — Part II"},{"k":"m221","n":221,"t":"It’s an Emergency","ty":"Immersion Time"},{"k":"m222","n":222,"t":"Academic English","ty":"Language Hacks"},{"k":"m223","n":223,"t":"I Don’t Get It","ty":"Writing Practice"},{"k":"m224","n":224,"t":"Slight Phobia","ty":"Pronunciation Hacks"}]},{"label":"Unidade 14","lessons":[{"k":"m225","n":225,"t":"Advanced Portuguese Learner","ty":"Comprehension Practice"},{"k":"m226","n":226,"t":"What I Know Is That You Should Move There","ty":"Grammar Hacks — Part I"},{"k":"m227","n":227,"t":"Never Have I Ever","ty":"Grammar Hacks — Part II"},{"k":"m228","n":228,"t":"Party Like It’s Your Birthday","ty":"Immersion Time"},{"k":"m229","n":229,"t":"I Told You Can Count on Me","ty":"Language Hacks"},{"k":"m230","n":230,"t":"My Faun Friend","ty":"Writing Practice"},{"k":"m231","n":231,"t":"Superhero Birthday Party","ty":"Pronunciation Hacks"}]},{"label":"Unidade 15","lessons":[{"k":"m232","n":232,"t":"Snowy Driving","ty":"Comprehension Practice"},{"k":"m233","n":233,"t":"An Interesting, Inspiring, Informational Class","ty":"Grammar Hacks"},{"k":"m234","n":234,"t":"Bring Home the Bacon","ty":"Immersion Time"},{"k":"m235","n":235,"t":"What’s the Order?","ty":"Language Hacks"},{"k":"m236","n":236,"t":"Just an Average Person","ty":"Writing Practice"},{"k":"m237","n":237,"t":"Happy Thanksgiving Week, Y’all!","ty":"Pronunciation Hacks"}]},{"label":"Unidade 16","lessons":[{"k":"m238","n":238,"t":"Brazilian Advanced","ty":"Comprehension Practice"},{"k":"m239","n":239,"t":"They Make Mistakes Too!","ty":"Grammar Hacks"},{"k":"m240","n":240,"t":"A Penny Saved Is a Penny Earned","ty":"Immersion Time"},{"k":"m241","n":241,"t":"Let’s Set the Tone","ty":"Language Hacks"},{"k":"m242","n":242,"t":"Santa Rat","ty":"Writing Practice"},{"k":"m243","n":243,"t":"Closing An Account","ty":"Pronunciation Hacks"}]}],"desc":"ganhe autonomia para expressar opiniões e narrar histórias. O foco é manter conversas fluidas, usar phrasal verbs e resolver imprevistos com total confiança."},"id":{"id":"id","name":"Independent","kind":"main","groups":[{"label":"Unidade 1","lessons":[{"k":"m244","n":244,"t":"Using the Present Perfect to create emotional connections","ty":"Comprehension Practice"},{"k":"m245","n":245,"t":"Working on expressiveness with intonation variations","ty":"Pronunciation Hacks"},{"k":"m246","n":246,"t":"Identifying central ideas in inspirational speeches","ty":"Comprehension Practice"},{"k":"m247","n":247,"t":"Talking about diversity, language, and cultural adaptation","ty":"Stamp your passport"}]},{"label":"Unidade 2","lessons":[{"k":"m248","n":248,"t":"Cultivating fluency in sharing experiences","ty":"Comprehension Practice"},{"k":"m249","n":249,"t":"Naturally and humorously expressing feelings","ty":"Pronunciation Hacks"},{"k":"m250","n":250,"t":"Enhancing listening skills through in-depth contemporary topics","ty":"Comprehension Practice"},{"k":"m251","n":251,"t":"Sharing personal travel experiences in English","ty":"Stamp your passport"}]},{"label":"Unidade 3","lessons":[{"k":"m252","n":252,"t":"Fluent practice: Past Simple, Past Continuous, and Present Perfect","ty":"Comprehension Practice"},{"k":"m253","n":253,"t":"Using intonation more dramatically and expressively","ty":"Pronunciation Hacks"},{"k":"m254","n":254,"t":"Employing reflective language to convey perspectives","ty":"Comprehension Practice"},{"k":"m255","n":255,"t":"Inspiring descriptions: your role as a student or teacher","ty":"Stamp your passport"}]},{"label":"Unidade 4","lessons":[{"k":"m256","n":256,"t":"Enhancing naturalness and spontaneity in social interactions","ty":"Comprehension Practice"},{"k":"m257","n":257,"t":"Informal and direct ways to express preferences","ty":"Pronunciation Hacks"},{"k":"m258","n":258,"t":"Expressing emotions with precision: technical vocabulary","ty":"Comprehension Practice"},{"k":"m259","n":259,"t":"Broadening horizons: vocabulary for travel, cultures, and personal identity","ty":"Stamp your passport"}]},{"label":"Unidade 5","lessons":[{"k":"m260","n":260,"t":"Discussing the future with different levels of certainty","ty":"Comprehension Practice"},{"k":"m261","n":261,"t":"Using could, should, might, and gerunds clearly","ty":"Pronunciation Hacks"},{"k":"m262","n":262,"t":"Examining potential shifts in societal and cultural landscapes","ty":"Comprehension Practice"},{"k":"m263","n":263,"t":"Personal growth through cultural mobility","ty":"Stamp your passport"}]},{"label":"Unidade 6","lessons":[{"k":"m264","n":264,"t":"Mastering “will”, “would”, and the present tense for effective communication","ty":"Comprehension Practice"},{"k":"m265","n":265,"t":"Diplomatically making requests and declining invitations","ty":"Pronunciation Hacks"},{"k":"m266","n":266,"t":"Talking about regrets","ty":"Comprehension Practice"},{"k":"m267","n":267,"t":"Considering the influence of cultural backgrounds on communication","ty":"Stamp your passport"}]},{"label":"Unidade 7","lessons":[{"k":"m268","n":268,"t":"Naturally reporting facts using the passive voice","ty":"Comprehension Practice"},{"k":"m269","n":269,"t":"Clarity and rhythm in reporting facts","ty":"Pronunciation Hacks"},{"k":"m270","n":270,"t":"Presenting facts and perspectives from diverse cultures","ty":"Comprehension Practice"},{"k":"m271","n":271,"t":"Sharing Personal Opinions Rooted in Experience","ty":"Stamp your passport"}]},{"label":"Unidade 8","lessons":[{"k":"m272","n":272,"t":"Sequencing Instructions Logically and Clearly","ty":"Comprehension Practice"},{"k":"m273","n":273,"t":"Clearly and convincingly reinforcing commands","ty":"Pronunciation Hacks"},{"k":"m274","n":274,"t":"Enhancing English Social Interactions","ty":"Comprehension Practice"},{"k":"m275","n":275,"t":"Delving into customs, memories, and discoveries experienced within a different culture.","ty":"Stamp your passport"}]},{"label":"Unidade 9","lessons":[{"k":"m276","n":276,"t":"Imposter Syndrome","ty":"Comprehension Practice"},{"k":"m277","n":277,"t":"Practicing formal and polite language","ty":"Pronunciation Hacks"},{"k":"m278","n":278,"t":"Habits, Productivity, and Decision-Making","ty":"Comprehension Practice"},{"k":"m279","n":279,"t":"Discussing Exchange and Volunteer Experiences","ty":"Stamp your passport"}]},{"label":"Unidade 10","lessons":[{"k":"m280","n":280,"t":"Employing imperatives and zero conditionals","ty":"Comprehension Practice"},{"k":"m281","n":281,"t":"Fluent discussion of uncertainties and dilemmas","ty":"Pronunciation Hacks"},{"k":"m282","n":282,"t":"The concept of happiness and success: Diverse perspectives","ty":"Comprehension Practice"},{"k":"m283","n":283,"t":"Developing Writing Skills and Expanding Academic and Personal Vocabulary","ty":"Stamp your passport"}]},{"label":"Unidade 11","lessons":[{"k":"m284","n":284,"t":"Using descriptive adjectives, fixed phrases and past tenses.","ty":"Comprehension Practice"},{"k":"m285","n":285,"t":"Emphasizing speech through effective use of rhythm and pauses","ty":"Pronunciation Hacks"},{"k":"m286","n":286,"t":"Discussing philosophical and emotional topics using appropriate vocabulary.","ty":"Comprehension Practice"},{"k":"m287","n":287,"t":"Reporting international experiences with informal and realistic vocabulary","ty":"Stamp your passport"}]},{"label":"Unidade 12","lessons":[{"k":"m288","n":288,"t":"Discussing Personal Growth with the Present Perfect and Past Perfect","ty":"Comprehension Practice"},{"k":"m289","n":289,"t":"Navigating social nuances: understanding sarcasm, tension, and subtle cues","ty":"Pronunciation Hacks"},{"k":"m290","n":290,"t":"Practice: Vocabulary on Fame, Image, and Humanity","ty":"Comprehension Practice"},{"k":"m291","n":291,"t":"Exploring the concept of intercultural pragmatics","ty":"Stamp your passport"}]},{"label":"Unidade 13","lessons":[{"k":"m292","n":292,"t":"Expressing agreement and disagreement","ty":"Comprehension Practice"},{"k":"m293","n":293,"t":"Developing skills for more impactful conversations","ty":"Pronunciation Hacks"},{"k":"m294","n":294,"t":"How to Disagree Productively and Find Common Ground","ty":"Comprehension Practice"},{"k":"m295","n":295,"t":"Talking about language learning through digital culture","ty":"Stamp your passport"}]},{"label":"Unidade 14","lessons":[{"k":"m296","n":296,"t":"Flexible argumentation and comparison","ty":"Comprehension Practice"},{"k":"m297","n":297,"t":"Practicing structures with if and would have","ty":"Pronunciation Hacks"},{"k":"m298","n":298,"t":"Using critical and reflective language in complex discussions","ty":"Comprehension Practice"},{"k":"m299","n":299,"t":"Practicing vocabulary about identity, society and authenticity","ty":"Stamp your passport"}]},{"label":"Unidade 15","lessons":[{"k":"m300","n":300,"t":"Technical and reflective vocabulary about art for direction and narrative.","ty":"Comprehension Practice"},{"k":"m301","n":301,"t":"Using adjectives and adverbs to describe experiences","ty":"Pronunciation Hacks"},{"k":"m302","n":302,"t":"Talking about curation, memory and personal narrative","ty":"Comprehension Practice"},{"k":"m303","n":303,"t":"Cross-cultural Perspectives: Examining Traditions and Cultural Views","ty":"Stamp your passport"}]},{"label":"Unidade 16","lessons":[{"k":"m304","n":304,"t":"Practicing vocabulary related to literature","ty":"Comprehension Practice"},{"k":"m305","n":305,"t":"Practicing conditional structures (Would, Were to, If)","ty":"Pronunciation Hacks"},{"k":"m306","n":306,"t":"Using abstract vocabulary","ty":"Comprehension Practice"},{"k":"m307","n":307,"t":"Talking about the future of education and work with AI","ty":"Stamp your passport"}]}],"desc":"fale com naturalidade e espontaneidade. Aprenda a argumentar, entender temas complexos e interagir com nativos com segurança sobre cultura e atualidades."},"bl":{"id":"bl","name":"Behind the Lyrics","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"bl1","n":1,"t":"Someone Like You (Adele)","d":25},{"k":"bl2","n":2,"t":"Sexed Up (Robbie Williams)","d":25},{"k":"bl3","n":3,"t":"Because of You (Kelly Clarkson)","d":25},{"k":"bl4","n":4,"t":"I'm Not the Only One (Sam Smith)","d":25},{"k":"bl5","n":5,"t":"Happier Than Ever (Billie Eilish)","d":25},{"k":"bl6","n":6,"t":"Say Something (A Great Big World & Christina Aguilera)","d":25},{"k":"bl7","n":7,"t":"Heartbreak Anniversary (Giveon)","d":25},{"k":"bl8","n":8,"t":"Every Breath You Take (The Police)","d":25},{"k":"bl9","n":9,"t":"Wanna Be Yours (Arctic Monkeys)","d":25},{"k":"bl10","n":10,"t":"Love Yourself (Justin Bieber)","d":25}]}],"tutor":"David Medeiros","desc":"explore o significado por trás de músicas consideradas românticas, mas que escondem mensagens bem menos fofas. O curso é ideal para iniciantes no inglês que querem explorar vocabulário e cultura musical."},"bd":{"id":"bd","name":"Business: Diálogo","kind":"comp","groups":[{"label":"Onda 01","lessons":[{"k":"bd1","n":1,"t":"At an Interview (Parte 1)","d":40},{"k":"bd2","n":2,"t":"At an Interview (Parte 2)","d":40},{"k":"bd3","n":3,"t":"First Time at the Office","d":40},{"k":"bd4","n":4,"t":"Technical Issues (Parte 1)","d":40},{"k":"bd5","n":5,"t":"Technical Issues (Parte 2)","d":40},{"k":"bd6","n":6,"t":"Meeting the Boss","d":40},{"k":"bd7","n":7,"t":"Setting Goals (Parte 1)","d":40},{"k":"bd8","n":8,"t":"Setting Goals (Parte 2)","d":40},{"k":"bd9","n":9,"t":"Setting Priorities","d":40},{"k":"bd10","n":10,"t":"Brainstorming (Parte 1)","d":40},{"k":"bd11","n":11,"t":"Brainstorming (Parte 2)","d":40},{"k":"bd12","n":12,"t":"Making Suggestions","d":40},{"k":"bd13","n":13,"t":"Water Cooler Talk","d":40},{"k":"bd14","n":14,"t":"Reassignments","d":40},{"k":"bd15","n":15,"t":"SWOT Analysis","d":40},{"k":"bd16","n":16,"t":"Dealing with a Client","d":40}]},{"label":"Onda 02","lessons":[{"k":"bd17","n":17,"t":"Making Criticisms","d":40},{"k":"bd18","n":18,"t":"Performance Review","d":40},{"k":"bd19","n":19,"t":"Meeting a Foreign Collaborator","d":40},{"k":"bd20","n":20,"t":"Happy Hour","d":40},{"k":"bd21","n":21,"t":"Outsourcing","d":40},{"k":"bd22","n":22,"t":"Good News and Bad News","d":40},{"k":"bd23","n":23,"t":"Layoff","d":40},{"k":"bd24","n":24,"t":"Managing a Crisis","d":40},{"k":"bd25","n":25,"t":"Project Discussion","d":40},{"k":"bd26","n":26,"t":"Discussing Motivation","d":40},{"k":"bd27","n":27,"t":"Negotiating a Raise","d":40},{"k":"bd28","n":28,"t":"Getting Promoted","d":40}]}],"tutor":"Thalita Uba","desc":"comece no inglês para negócios explorando diálogos reais e situações do mundo corporativo. Ideal para quem já tem conhecimento do idioma e quer dominar o vocabulário de *business*."},"nt":{"id":"nt","name":"Business: Native Talk","kind":"comp","groups":[{"label":"Onda 01","lessons":[{"k":"nt1","n":1,"t":"Interview Questions","d":30},{"k":"nt2","n":2,"t":"Starting a Conversation","d":30},{"k":"nt3","n":3,"t":"Making Formal Requests","d":30},{"k":"nt4","n":4,"t":"Making Requests","d":30},{"k":"nt5","n":5,"t":"Paying Taxes","d":30},{"k":"nt6","n":6,"t":"Personal Finances","d":30},{"k":"nt7","n":7,"t":"Conference Calls","d":30},{"k":"nt8","n":8,"t":"Accepting and Rejecting Suggestions","d":30},{"k":"nt9","n":9,"t":"Sports Idioms","d":30},{"k":"nt10","n":10,"t":"Talking About Your Company","d":30},{"k":"nt11","n":11,"t":"Describing Your Projects","d":30},{"k":"nt12","n":12,"t":"Negotiation Tactics","d":30}]},{"label":"Onda 02","lessons":[{"k":"nt13","n":13,"t":"Sharing Personal Opinions","d":30},{"k":"nt14","n":14,"t":"Receiving Criticism","d":30},{"k":"nt15","n":15,"t":"Etiquette","d":30},{"k":"nt16","n":16,"t":"Discussing the Economy","d":30},{"k":"nt17","n":17,"t":"Discussing Financing Strategies","d":30},{"k":"nt18","n":18,"t":"Answering a Difficult Question","d":30},{"k":"nt19","n":19,"t":"Using Positive Language","d":30},{"k":"nt20","n":20,"t":"Apologizing Appropriately","d":30},{"k":"nt21","n":21,"t":"Giving Presentations","d":30},{"k":"nt22","n":22,"t":"Talking About Your Achievements","d":30},{"k":"nt23","n":23,"t":"Discussing Career Plans","d":30}]}],"tutor":"Jena","desc":"explore situações corporativas de forma prática e natural. Ideal para quem já domina o inglês e quer ganhar confiança para se destacar e se comunicar com segurança no mundo dos negócios."},"dc":{"id":"dc","name":"Dialogue Class","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"dc1","n":1,"t":"Checking in at the airport","d":40},{"k":"dc2","n":2,"t":"On the plane - Part I","d":40},{"k":"dc3","n":3,"t":"Exchanging money","d":40},{"k":"dc4","n":4,"t":"Getting the WIFI password","d":40},{"k":"dc5","n":5,"t":"Asking for directions","d":40},{"k":"dc6","n":6,"t":"Ordering at a restaurant","d":40},{"k":"dc7","n":7,"t":"Getting to know the hotel amenities","d":40},{"k":"dc8","n":8,"t":"On a diet","d":40},{"k":"dc9","n":9,"t":"Talking about family","d":40},{"k":"dc10","n":10,"t":"Asking for a favor","d":40},{"k":"dc11","n":11,"t":"Being hungover","d":40},{"k":"dc12","n":12,"t":"Ordering hotel room service","d":40},{"k":"dc13","n":13,"t":"Breaking up","d":40},{"k":"dc14","n":14,"t":"Coming home from a rough day","d":40}]}],"tutor":"Rhavi Carneiro","desc":"é hora da imersão! Amplie seu vocabulário e aprenda estruturas em diálogos que simulam situações do dia a dia. Perfeito para iniciantes ou quem já conhece inglês e quer se aperfeiçoar."},"ec":{"id":"ec","name":"Ear Candy","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"ec1","n":1,"t":"Cherry Bomb (The Runaways)","d":40},{"k":"ec2","n":2,"t":"The Man (Aloe Blacc)","d":40},{"k":"ec3","n":3,"t":"High Hopes (Panic! At The Disco)","d":40},{"k":"ec4","n":4,"t":"Hate to Say I Told You So (The Hives)","d":40},{"k":"ec5","n":5,"t":"House of the Rising Sun (The Animals)","d":40},{"k":"ec6","n":6,"t":"The Rock Show (blink-182)","d":40},{"k":"ec7","n":7,"t":"Nightmare (Halsey)","d":40},{"k":"ec8","n":8,"t":"I Wanna See the World (Hobo Johnson and the Love Makers)","d":40},{"k":"ec9","n":9,"t":"I'll Survive (Gloria Gaynor)","d":40},{"k":"ec10","n":10,"t":"All I Need (Jacob Collier)","d":40},{"k":"ec11","n":11,"t":"Sweet (BROCKHAMPTON)","d":40},{"k":"ec12","n":12,"t":"Sugar (Robin Schulz)","d":40},{"k":"ec13","n":13,"t":"Ironic (Alanis Morissette)","d":40},{"k":"ec14","n":14,"t":"Truth Hurts (Lizzo)","d":40},{"k":"ec15","n":15,"t":"Bad Guy (Billie Eilish)","d":40},{"k":"ec16","n":16,"t":"Xmas in February (Lou Reed)","d":40}]}],"tutor":"Becca Jackson","desc":"use letras de músicas para ajudar a destravar e aperfeiçoar sua pronúncia em inglês. Perfeito para estudantes a partir do nível básico que querem aprender cantando."},"ev":{"id":"ev","name":"Expansão de vocabulário","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"ev1","n":1,"t":"In the Kitchen","d":40},{"k":"ev2","n":2,"t":"Personal Care","d":40},{"k":"ev3","n":3,"t":"Crime Scene","d":40},{"k":"ev4","n":4,"t":"Relationships","d":40},{"k":"ev5","n":5,"t":"Office Life","d":40},{"k":"ev6","n":6,"t":"Summer Activities","d":40},{"k":"ev7","n":7,"t":"School","d":40},{"k":"ev8","n":8,"t":"Hobbies","d":40},{"k":"ev9","n":9,"t":"Computer + Technology","d":40},{"k":"ev10","n":10,"t":"Sports","d":40},{"k":"ev11","n":11,"t":"Video Games and Entertainment","d":40},{"k":"ev12","n":12,"t":"Small Talk","d":40},{"k":"ev13","n":13,"t":"University Campus","d":40},{"k":"ev14","n":14,"t":"Families","d":40},{"k":"ev15","n":15,"t":"Good Eats","d":40},{"k":"ev16","n":16,"t":"Museum","d":40}]}],"tutor":"Becca Jackson","desc":"amplie seu vocabulário sobre diversos tópicos e aprenda a criar conexões que tornam mais fácil memorizar palavras. Ideal para iniciantes que estão prontos para um desafio divertido e estimulante."},"ei":{"id":"ei","name":"Expressões idiomáticas","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"ei1","n":1,"t":"Sup?","d":40},{"k":"ei2","n":2,"t":"I'm into it!","d":40},{"k":"ei3","n":3,"t":"Food for thought","d":40},{"k":"ei4","n":4,"t":"Reality check","d":40},{"k":"ei5","n":5,"t":"Uh, the shade!","d":40},{"k":"ei6","n":6,"t":"Spill the tea!","d":40},{"k":"ei7","n":7,"t":"Face the music","d":40},{"k":"ei8","n":8,"t":"I'd rather watch paint dry","d":40},{"k":"ei9","n":9,"t":"Come back down!","d":40},{"k":"ei10","n":10,"t":"Feeling under the weather","d":40},{"k":"ei11","n":11,"t":"Piece of cake!","d":40},{"k":"ei12","n":12,"t":"Long story short","d":40},{"k":"ei13","n":13,"t":"It runs in the family","d":40},{"k":"ei14","n":14,"t":"Hit it!","d":40},{"k":"ei15","n":15,"t":"Pull yourself together","d":40},{"k":"ei16","n":16,"t":"From scratch","d":40}]}],"tutor":"Paula Gabriela","desc":"explore gírias e expressões do inglês usadas no dia a dia, ideal para quem já passou do básico. Entenda quando não dá para traduzir ao pé da letra e ganhe fluidez para se comunicar com confiança."},"gh":{"id":"gh","name":"Grammar Hacks","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"gh1","n":1,"t":"The Verb \"Be\": Introduction I","d":40},{"k":"gh2","n":2,"t":"The Verb \"Be\": Introduction II","d":40},{"k":"gh3","n":3,"t":"The Verb \"Be\": Talking About Yourself","d":40},{"k":"gh4","n":4,"t":"The Verb \"Be\": Talking to You","d":40},{"k":"gh5","n":5,"t":"The Verb \"Be\": We and They","d":40},{"k":"gh6","n":6,"t":"The Verb \"Be\": He, She and It","d":40},{"k":"gh7","n":7,"t":"Simple Present: My Routine","d":40},{"k":"gh8","n":8,"t":"Simple Present: You and We","d":40},{"k":"gh9","n":9,"t":"Simple Present: They","d":40},{"k":"gh10","n":10,"t":"Simple Present: The \"S\" Rule","d":40},{"k":"gh11","n":11,"t":"Simple Present: Putting it all together","d":40},{"k":"gh12","n":12,"t":"Object Pronouns: Singular","d":40},{"k":"gh13","n":13,"t":"Object Pronouns: Plural","d":40},{"k":"gh14","n":14,"t":"Possessives: My vs. Mine","d":40},{"k":"gh15","n":15,"t":"Possessives: Your, His and Her","d":40},{"k":"gh16","n":16,"t":"Possessives: Its, Our and Their","d":40}]},{"label":"Unidade 2","lessons":[{"k":"gh17","n":17,"t":"Simple Past \"Be\": I and You","d":40},{"k":"gh18","n":18,"t":"Simple Past \"Be\": He, She and It","d":40},{"k":"gh19","n":19,"t":"Simple Past \"Be\": We and They","d":40},{"k":"gh20","n":20,"t":"Present Continuous: I and You","d":40},{"k":"gh21","n":21,"t":"Present Continuous: He, She and It","d":40},{"k":"gh22","n":22,"t":"Simple Past Regular Verbs: I and You","d":40},{"k":"gh23","n":23,"t":"Simple Past Regular Verbs: He, She and It","d":40},{"k":"gh24","n":24,"t":"Simple Past Regular Verbs: We and They","d":40},{"k":"gh25","n":25,"t":"Simple Past Irregular Verbs: I and You","d":40},{"k":"gh26","n":26,"t":"Simple Past Irregular Verbs: He, She and It","d":40},{"k":"gh27","n":27,"t":"Simple Past Irregular Verbs: We and They","d":40},{"k":"gh28","n":28,"t":"Modals Can & Could: I and You","d":40},{"k":"gh29","n":29,"t":"Modals Can & Could: He, She and It","d":40},{"k":"gh30","n":30,"t":"Modals Can & Could: We and They","d":40},{"k":"gh31","n":31,"t":"There is and There are","d":40},{"k":"gh32","n":32,"t":"There was and There were I","d":40}]},{"label":"Unidade 3","lessons":[{"k":"gh33","n":33,"t":"There was and There were II","d":40},{"k":"gh34","n":34,"t":"Future with Will: I and You","d":40},{"k":"gh35","n":35,"t":"Future with Will: He, She and It","d":40},{"k":"gh36","n":36,"t":"Future with Will: We and They","d":40},{"k":"gh37","n":37,"t":"Future with \"Be Going To\": Singular","d":40},{"k":"gh38","n":38,"t":"Future with \"Be Going To\": Plural","d":40},{"k":"gh39","n":39,"t":"Modals: Might","d":40},{"k":"gh40","n":40,"t":"Modals: May","d":40},{"k":"gh41","n":41,"t":"Comparatives: People","d":40},{"k":"gh42","n":42,"t":"Comparatives: Things","d":40},{"k":"gh43","n":43,"t":"Superlatives: People","d":40},{"k":"gh44","n":44,"t":"Superlatives: Things and Situations","d":40}]}],"tutor":"Rhavi Carneiro","desc":"estude gramática de um jeito leve e simples, perfeito para iniciantes. Deixe de lado os métodos tradicionais e veja na prática como as estruturas funcionam para usar o inglês no dia a dia."},"if":{"id":"if","name":"Inglês com filmes","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"if1","n":1,"t":"I'm Waiting for the Punchline","d":40},{"k":"if2","n":2,"t":"I've Got a Hangover","d":40},{"k":"if3","n":3,"t":"There's No Crying","d":40},{"k":"if4","n":4,"t":"I Was Thinking...","d":40},{"k":"if5","n":5,"t":"I Don't Have Any Good Skills","d":40},{"k":"if6","n":6,"t":"Everyone Except Me","d":40},{"k":"if7","n":7,"t":"He Doesn't Exist","d":40},{"k":"if8","n":8,"t":"I Don't Mind","d":40},{"k":"if9","n":9,"t":"I Would Like To Buy a Hamburger","d":40},{"k":"if10","n":10,"t":"Preparing for the Cake","d":40},{"k":"if11","n":11,"t":"Living Hell","d":40},{"k":"if12","n":12,"t":"I'm Worried About You","d":40}]}],"tutor":"Tiago Rocha","desc":"melhore sua comunicação e fale pelos cotovelos aprendendo com filmes, novelas e séries. Domine expressões, entonação e vocabulário para deixar seu inglês mais natural e confiante no dia a dia."},"mg":{"id":"mg","name":"Mochilão com as Gêmeas","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"mg1","n":1,"t":"Cadê o Passaporte?","d":35,"ty":"Preparar a viagem"},{"k":"mg2","n":2,"t":"Conexão Perdida","d":28,"ty":"Passar pela imigração"},{"k":"mg3","n":3,"t":"Desafio no Texas","d":30,"ty":"Alugar um carro"},{"k":"mg4","n":4,"t":"Em Busca da Placa de Hollywood","d":20,"ty":"Pedir direções"},{"k":"mg5","n":5,"t":"Tudo ou Nada em Las Vegas","d":25,"ty":"Falar sobre dinheiro"},{"k":"mg6","n":6,"t":"Uma Noite na Broadway","d":28,"ty":"Falar sobre o passado"},{"k":"mg7","n":7,"t":"Check-in em Nova York","d":26,"ty":"Fazer check-in"}]}],"tutor":"Giovanna Reimer e Bianca Isaak","desc":"aprenda inglês para situações reais de viagem, com vocabulário e estruturas úteis para se comunicar em aeroportos, hotéis, lojas e restaurantes. Ideal para iniciantes que buscam um aprendizado leve, prático e contextualizado em uma aventura pelos Estados Unidos."},"pa":{"id":"pa","name":"Phrasal verbs avançados","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"pa1","n":1,"t":"Travel","d":40},{"k":"pa2","n":2,"t":"Weather","d":40},{"k":"pa3","n":3,"t":"You've Gotta Ask Around","d":40},{"k":"pa4","n":4,"t":"Stop Goofing Around!","d":40},{"k":"pa5","n":5,"t":"Let's Go Out","d":40},{"k":"pa6","n":6,"t":"Suck It Up","d":40},{"k":"pa7","n":7,"t":"A House Is Not a Home","d":40},{"k":"pa8","n":8,"t":"Time to Act","d":40},{"k":"pa9","n":9,"t":"How Can I Help?","d":40},{"k":"pa10","n":10,"t":"Time is Money","d":40},{"k":"pa11","n":11,"t":"Exam Week","d":40},{"k":"pa12","n":12,"t":"Talking Politics","d":40},{"k":"pa13","n":13,"t":"No Pain, No Gain","d":40},{"k":"pa14","n":14,"t":"Make a Move","d":40}]}],"tutor":"Scott Lowe","desc":"estude *phrasal verbs* avançados de forma prática e contextualizada. Perfeito para quem já é intermediário, aprenda expressões do inglês real e evolua sua fluência de forma prática e divertida."},"pe":{"id":"pe","name":"Phrasal verbs essenciais","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"pe1","n":1,"t":"At the store","d":40},{"k":"pe2","n":2,"t":"Talking about family","d":40},{"k":"pe3","n":3,"t":"On a trail run at sunset","d":40},{"k":"pe4","n":4,"t":"Applyingfor a job","d":40},{"k":"pe5","n":5,"t":"Rain on your parade","d":40},{"k":"pe6","n":6,"t":"A bad date in Cleveland","d":40},{"k":"pe7","n":7,"t":"Summers with Ben","d":40},{"k":"pe8","n":8,"t":"Phrasal verbs with \"get\"","d":40},{"k":"pe9","n":9,"t":"Phrasal verbs with \"out\"","d":40},{"k":"pe10","n":10,"t":"Phrasal verbs related to technology","d":40},{"k":"pe11","n":11,"t":"Intransitive or not?","d":40},{"k":"pe12","n":12,"t":"Separable or not?","d":40},{"k":"pe13","n":13,"t":"Camping in Colorado","d":40},{"k":"pe14","n":14,"t":"My first job","d":40},{"k":"pe15","n":15,"t":"A robbery in the neighborhood","d":40},{"k":"pe16","n":16,"t":"Life on campus","d":40},{"k":"pe17","n":17,"t":"Pregnant with Coronavirus","d":40},{"k":"pe18","n":18,"t":"Spring Cleaning","d":40},{"k":"pe19","n":19,"t":"Drunk in Cancun","d":40},{"k":"pe20","n":20,"t":"Proposing to Lauren","d":40},{"k":"pe21","n":21,"t":"Total Eclipse","d":40}]}],"tutor":"Gavin Roy","desc":"descomplique o uso de *phrasal verbs* começando pelos mais comuns, neste curso para alunos do básico. Aprenda a usar essas expressões no dia a dia e deixe sua comunicação em inglês mais natural e fluida."},"vu":{"id":"vu","name":"Vivendo nos Estados Unidos","kind":"comp","groups":[{"label":"Unidade 1","lessons":[{"k":"vu1","n":1,"t":"What I Eat in a Day","d":40},{"k":"vu2","n":2,"t":"My Home","d":40},{"k":"vu3","n":3,"t":"Screen Time","d":40},{"k":"vu4","n":4,"t":"My Pet","d":40},{"k":"vu5","n":5,"t":"Bookshelf Tour","d":40},{"k":"vu6","n":6,"t":"It Looks So Real!","d":40},{"k":"vu7","n":7,"t":"Opening Doors","d":40},{"k":"vu8","n":8,"t":"My Gamer Self","d":40},{"k":"vu9","n":9,"t":"Giving Back to the Community","d":40},{"k":"vu10","n":10,"t":"Let's Bake!","d":40},{"k":"vu11","n":11,"t":"Best Concert Ever","d":40},{"k":"vu12","n":12,"t":"Well done!","d":40},{"k":"vu13","n":13,"t":"The Big Picture","d":40},{"k":"vu14","n":14,"t":"What Makes Me Me","d":40},{"k":"vu15","n":15,"t":"Traveling","d":40},{"k":"vu16","n":16,"t":"I'd Do It All Again","d":40}]}],"tutor":"Taylah Martin e Scott Lowe","desc":"descubra a vida de dois nativos com vídeos curtos e divertidos. Feito totalmente em inglês, este curso é para estudantes independentes que querem aguçar os ouvidos e compreender o idioma de forma natural."}};
+var AVG = { fs: 11, ba: 38, in: 40, id: 40 };
+var IMP = {
+  ess: { label: 'Essencial', bonus: 300 }, mi: { label: 'Muito importante', bonus: 200 },
+  imp: { label: 'Importante', bonus: 120 }, opt: { label: 'Opcional', bonus: 80 }, side: { label: 'Missão extra', bonus: 100 }
+};
+var STEPS = [
+  { id: 's1', n: 1, imp: 'ess', c: 'fs', title: 'First Steps', why: 'Base de tudo: se apresentar, falar da rotina e fazer pedidos.' },
+  { id: 's2', n: 2, imp: 'mi', c: 'gh', range: [1, 16], title: 'Grammar Hacks · Unidade 1', why: 'Verbo be, simple present, pronomes e possessivos.' },
+  { id: 's3', n: 3, imp: 'ess', c: 'ba', title: 'Basic', why: 'Onde entram passado e futuro, seus pontos fracos.' },
+  { id: 's4', n: 4, imp: 'mi', c: 'gh', range: [17, 44], title: 'Grammar Hacks · Unidades 2 e 3', why: 'Reforça o passado e o futuro que o Basic ensina.' },
+  { id: 's5', n: 5, imp: 'imp', c: 'dc', title: 'Dialogue Class', why: 'Diálogos do dia a dia: aeroporto, restaurante, pedir favores.' },
+  { id: 's6', n: 6, imp: 'imp', c: 'if', title: 'Inglês com filmes', why: 'Listening, entonação e expressões naturais. Uma aula leve para variar a semana.' },
+  { id: 's7', n: 7, imp: 'imp', c: 'pe', title: 'Phrasal verbs essenciais', why: 'Os phrasal verbs mais comuns. Prepara para o Intermediate, que usa muitos.' },
+  { id: 's8', n: 8, imp: 'ess', c: 'in', title: 'Intermediate', why: 'Leva ao B1, o mínimo para trabalhar com gringos.' },
+  { id: 's9', n: 9, imp: 'mi', c: 'bd', title: 'Business: Diálogo', why: 'Entrevista, reuniões, prioridades e clientes.' },
+  { id: 's10', n: 10, imp: 'mi', title: 'Simulações de trabalho', why: 'Treino com o Claude, fora da Fluency: o inglês de dev que os cursos não cobrem.', tasks: [
+    'Daily: o que fiz ontem, o que faço hoje e bloqueios',
+    'Explicar um bug: o que acontece, o esperado e o que já testei',
+    'Pedir ajuda a um colega e pedir para repetir',
+    'Dar e receber feedback em code review',
+    'Apresentar uma tarefa concluída numa reunião',
+    'Entrevista: "Tell me about yourself"',
+    'Entrevista: explicar um projeto técnico seu',
+    'Entrevista: perguntas comportamentais (desafio, conflito, erro)'
+  ] },
+  { id: 's11', n: 11, imp: 'imp', c: 'nt', pick: [1, 7, 10, 11], title: 'Business: Native Talk · 4 aulas', why: 'As aulas mais úteis para entrevista e reuniões remotas.' },
+  { id: 's12', n: 12, imp: 'imp', title: 'Pitch de 2 minutos', why: 'Quem você é, sua experiência e seus projetos. É o que mais se usa em entrevista.', tasks: [
+    'Escrever o roteiro: quem você é, stack, projetos e objetivo',
+    'Revisar o roteiro com o Claude',
+    'Gravar a primeira versão e ouvir',
+    'Apresentar numa conversação em grupo',
+    'Versão final com menos de 2 minutos, sem ler'
+  ] },
+  { id: 's13', n: 13, imp: 'opt', c: 'id', title: 'Independent', why: 'Argumentar, discutir temas complexos e falar com naturalidade.' },
+  { id: 's14', n: 14, imp: 'opt', c: 'nt', omit: [1, 7, 10, 11], title: 'Business: Native Talk · restante', why: 'Feedback, negociação, apresentações e falar de conquistas.' },
+  { id: 's15', n: 15, imp: 'opt', c: 'ei', title: 'Expressões idiomáticas', why: 'Gírias e expressões que não se traduzem ao pé da letra.' },
+  { id: 's16', n: 16, imp: 'opt', c: 'pa', title: 'Phrasal verbs avançados', why: 'Phrasal verbs do inglês real, para quem já é intermediário.' },
+  { id: 's17', n: 17, imp: 'opt', c: 'vu', title: 'Vivendo nos Estados Unidos', why: 'Vídeos de nativos, totalmente em inglês. Um ótimo teste de listening.' },
+  { id: 'x1', imp: 'side', c: 'mg', title: 'Mochilão com as Gêmeas', why: 'Inglês de viagem em 7 aulas curtas.' },
+  { id: 'x2', imp: 'side', c: 'ev', title: 'Expansão de vocabulário', why: 'Vocabulário por temas, com técnicas para memorizar.' },
+  { id: 'x3', imp: 'side', c: 'bl', title: 'Behind the Lyrics', why: 'Vocabulário e cultura a partir de músicas famosas.' },
+  { id: 'x4', imp: 'side', c: 'ec', title: 'Ear Candy', why: 'Pronúncia usando letras de músicas.' }
+];
+var STOPS = [['s1'], ['s2'], ['s3'], ['s4'], ['s5'], ['s6'], ['s7'], ['s8'], ['s9'], ['s10'], ['s11'], ['s12'], null, ['s13'], ['s14'], ['s15'], ['s16'], ['s17']];
+var RANKS = [[1, 'Hello World'], [3, 'Tourist'], [5, 'Small Talker'], [8, 'Junior Speaker'], [11, 'Daily Survivor'], [14, 'Meeting Ready'], [17, 'Remote Ready'], [20, 'Global Dev'], [24, 'Fluent Engineer']];
+
+/* ---------- Índice de aulas ---------- */
+var L = {}, STEP = {};
+Object.keys(COURSES).forEach(function (cid) {
+  var c = COURSES[cid];
+  c.groups.forEach(function (g) { g.lessons.forEach(function (l) { L[l.k] = Object.assign({ c: cid, kind: c.kind }, l); }); });
+});
+STEPS.forEach(function (s) {
+  STEP[s.id] = s;
+  if (s.tasks) {
+    var keys = s.tasks.map(function (t, i) { var k = s.id + 't' + (i + 1); L[k] = { k: k, n: i + 1, t: t, kind: 'task' }; return k; });
+    s.groups = [{ label: 'Missões de prática', keys: keys, full: false }];
+  } else {
+    var c = COURSES[s.c];
+    var ok = function (l) {
+      return (!s.range || (l.n >= s.range[0] && l.n <= s.range[1])) && (!s.pick || s.pick.indexOf(l.n) > -1) && (!s.omit || s.omit.indexOf(l.n) < 0);
+    };
+    s.groups = c.groups.map(function (g) {
+      var keys = g.lessons.filter(ok).map(function (l) { return l.k; });
+      return { label: g.label, keys: keys, full: keys.length === g.lessons.length };
+    }).filter(function (g) { return g.keys.length; });
+    s.course = c;
+  }
+  s.keys = [].concat.apply([], s.groups.map(function (g) { return g.keys; }));
+  s.minutes = s.keys.reduce(function (a, k) { return a + mins(k); }, 0);
+});
+var LESSON_TOTAL = Object.keys(L).filter(function (k) { return L[k].kind !== 'task'; }).length;
+var TRAIL_MIN = STEPS.filter(function (s) { return s.n && s.n <= 12; }).reduce(function (a, s) { return a + s.minutes; }, 0);
+
+function mins(k) { var l = L[k]; if (l.kind === 'task') return 0; return l.d || AVG[l.c] || 40; }
+function xpOf(k) { var l = L[k]; return l.kind === 'task' ? 20 : l.kind === 'main' ? 10 : 15; }
+function cat(ty) {
+  if (!ty) return '';
+  if (/Vocab/i.test(ty)) return 't-vocab';
+  if (/Pronunciation/i.test(ty)) return 't-pron';
+  if (/Comprehension/i.test(ty)) return 't-listen';
+  if (/Grammar|Language|Level/i.test(ty)) return 't-gram';
+  return 't-speak';
+}
+
+/* ---------- Datas ---------- */
+function pad(n) { return String(n).padStart(2, '0'); }
+function ymd(d) { return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+function todayStr() { return ymd(new Date()); }
+function parseYmd(s) { var p = s.split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); }
+function addDays(d, n) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() + n); return x; }
+function weekStart(d) { var x = new Date(d.getFullYear(), d.getMonth(), d.getDate()); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; }
+function wkey(s) { return ymd(weekStart(parseYmd(s))); }
+
+/* ---------- Estado ---------- */
+var LS_KEY = 'fluency-quest-v1';
+function blank() { return { v: 1, done: {}, conv: [], mem: [], seen: [], updatedAt: 0 }; }
+function sanitize(o) {
+  var s = blank();
+  if (!o || typeof o !== 'object') return s;
+  if (o.done && typeof o.done === 'object') Object.keys(o.done).forEach(function (k) { if (L[k] && typeof o.done[k] === 'string') s.done[k] = o.done[k]; });
+  if (Array.isArray(o.conv)) s.conv = o.conv.filter(function (x) { return typeof x === 'number'; });
+  if (Array.isArray(o.mem)) s.mem = o.mem.filter(function (x) { return typeof x === 'string'; });
+  if (Array.isArray(o.seen)) s.seen = o.seen.filter(function (x) { return typeof x === 'string'; });
+  s.updatedAt = +o.updatedAt || 0;
+  return s;
+}
+var S = blank();
+try { S = sanitize(JSON.parse(localStorage.getItem(LS_KEY) || 'null')); } catch (e) { S = blank(); }
+var ui = { sel: null, q: '', hide: false, allBadges: false };
+try { var u = JSON.parse(localStorage.getItem(LS_KEY + ':ui') || 'null'); if (u) { ui.sel = STEP[u.sel] ? u.sel : null; ui.hide = !!u.hide; } } catch (e) {}
+
+/* ---------- Cálculo ---------- */
+function needFor(lv) { return 25 * (lv - 1) * lv; }
+function levelFor(xp) { var lv = 1; while (xp >= needFor(lv + 1)) lv++; return lv; }
+function rankFor(lv) { var r = RANKS[0][1]; RANKS.forEach(function (x) { if (lv >= x[0]) r = x[1]; }); return r; }
+function nextRank(lv) { for (var i = 0; i < RANKS.length; i++) if (RANKS[i][0] > lv) return RANKS[i]; return null; }
+function questDone(w) { return w && w.main >= 5 && w.comp >= 1 && w.conv >= 2 && w.mem >= 5; }
+
+function compute() {
+  var done = S.done, D = { step: {} }, xp = 0;
+  var keys = Object.keys(done);
+  D.count = 0; D.pron = 0; D.minutes = 0; D.mainUnits = 0;
+  var coursesTouched = {};
+  keys.forEach(function (k) {
+    var l = L[k]; xp += xpOf(k); D.minutes += mins(k);
+    if (l.kind !== 'task') { D.count++; coursesTouched[l.c] = 1; }
+    if (l.ty && /Pronunciation/.test(l.ty)) D.pron++;
+  });
+  Object.keys(COURSES).forEach(function (cid) {
+    COURSES[cid].groups.forEach(function (g) {
+      if (g.lessons.every(function (l) { return done[l.k]; })) { xp += 25; if (COURSES[cid].kind === 'main') D.mainUnits++; }
+    });
+  });
+  STEPS.forEach(function (s) {
+    var d = s.keys.filter(function (k) { return done[k]; }).length;
+    D.step[s.id] = { d: d, t: s.keys.length, pct: d / s.keys.length, complete: d === s.keys.length };
+    if (d === s.keys.length) xp += IMP[s.imp].bonus;
+  });
+  xp += S.conv.length * 30 + S.mem.length * 5;
+
+  var W = {};
+  function w(k) { return W[k] || (W[k] = { main: 0, comp: 0, conv: 0, mem: 0 }); }
+  keys.forEach(function (k) { var l = L[k]; if (l.kind === 'main') w(wkey(done[k])).main++; else if (l.kind === 'comp') w(wkey(done[k])).comp++; });
+  S.conv.forEach(function (ts) { w(wkey(ymd(new Date(ts)))).conv++; });
+  S.mem.forEach(function (s) { w(wkey(s)).mem++; });
+  D.weeksDone = Object.keys(W).filter(function (k) { return questDone(W[k]); }).length;
+  xp += D.weeksDone * 100;
+  var tday = todayStr();
+  D.week = W[wkey(tday)] || { main: 0, comp: 0, conv: 0, mem: 0 };
+  D.weekDone = questDone(D.week);
+
+  var act = {};
+  keys.forEach(function (k) { act[done[k]] = 1; });
+  S.conv.forEach(function (ts) { act[ymd(new Date(ts))] = 1; });
+  S.mem.forEach(function (s) { act[s] = 1; });
+  var days = Object.keys(act).sort();
+  var cur = 0, best = 0, sh = 0;
+  if (days.length) {
+    var d = parseYmd(days[0]), guard = 0;
+    while (ymd(d) <= tday && guard++ < 4000) {
+      var key = ymd(d);
+      if (act[key]) cur++;
+      else if (key !== tday) { if (sh > 0) sh--; else cur = 0; }
+      if (cur > best) best = cur;
+      if (d.getDay() === 0 && questDone(W[ymd(weekStart(d))])) sh = Math.min(2, sh + 1);
+      d = addDays(d, 1);
+    }
+  }
+  D.streak = cur; D.best = best; D.shields = sh; D.todayActive = !!act[tday];
+
+  D.xp = xp; D.level = levelFor(xp); D.rank = rankFor(D.level);
+  D.lvFrom = needFor(D.level); D.lvTo = needFor(D.level + 1);
+  D.convTotal = S.conv.length; D.memTotal = S.mem.length;
+  D.courses = Object.keys(coursesTouched).length;
+  D.sides = ['x1', 'x2', 'x3', 'x4'].filter(function (id) { return D.step[id].complete; }).length;
+  var st = D.step;
+  D.cefr = st.s13.complete ? 'B2' : st.s8.complete ? 'B1' : st.s8.pct >= .5 ? 'A2+' : st.s3.complete ? 'A2' : st.s3.pct >= .5 ? 'A1+' : st.s1.complete ? 'A1' : 'Pré-A1';
+  var readyIds = STEPS.filter(function (s) { return s.n && s.n <= 12 && (s.imp === 'ess' || s.imp === 'mi'); }).map(function (s) { return s.id; });
+  D.ready = [readyIds.filter(function (id) { return st[id].complete; }).length, readyIds.length];
+  D.badges = BADGES.map(function (b) { var p = b.p(D); return { b: b, have: Math.min(p[0], p[1]), goal: p[1], won: p[0] >= p[1] }; });
+  return D;
+}
+function sp(id) { return function (D) { return [D.step[id].d, D.step[id].t]; }; }
+var BADGES = [
+  { id: 'first', name: 'Hello, World', desc: 'Conclua sua primeira aula', icon: 'bolt', p: function (D) { return [D.count, 1]; } },
+  { id: 'unit', name: 'Unidade fechada', desc: 'Conclua uma unidade inteira da grade', icon: 'check', p: function (D) { return [D.mainUnits, 1]; } },
+  { id: 'fs', name: 'Primeiros passos', desc: 'Conclua o First Steps', icon: 'flag', p: sp('s1') },
+  { id: 'gh', name: 'Grammar Hacker', desc: 'Conclua as 44 aulas do Grammar Hacks', icon: 'code', p: function (D) { return [D.step.s2.d + D.step.s4.d, 44]; } },
+  { id: 'ba', name: 'Viajante do tempo', desc: 'Conclua o Basic e domine passado e futuro', icon: 'clock', p: sp('s3') },
+  { id: 'film', name: 'Cinéfilo', desc: 'Conclua Inglês com filmes', icon: 'film', p: sp('s6') },
+  { id: 'in', name: 'B1 desbloqueado', desc: 'Conclua o Intermediate', icon: 'crown', p: sp('s8') },
+  { id: 'biz', name: 'Business mode', desc: 'Conclua o Business: Diálogo', icon: 'briefcase', p: sp('s9') },
+  { id: 'pitch', name: 'Elevator pitch', desc: 'Conclua o passo 12', icon: 'rocket', p: sp('s12') },
+  { id: 'ready', name: 'Remote Ready', desc: 'Conclua todos os passos essenciais e muito importantes', icon: 'globe', p: function (D) { return D.ready; } },
+  { id: 'indep', name: 'Independente', desc: 'Conclua o Independent', icon: 'compass', p: sp('s13') },
+  { id: 'l50', name: '50 aulas', desc: 'Conclua 50 aulas', icon: 'book', p: function (D) { return [D.count, 50]; } },
+  { id: 'l150', name: '150 aulas', desc: 'Conclua 150 aulas', icon: 'book', p: function (D) { return [D.count, 150]; } },
+  { id: 'l300', name: '300 aulas', desc: 'Conclua 300 aulas', icon: 'book-open', p: function (D) { return [D.count, 300]; } },
+  { id: 'all', name: 'Zerou a Fluency', desc: 'Conclua todas as ' + 544 + ' aulas', icon: 'trophy', p: function (D) { return [D.count, LESSON_TOTAL]; } },
+  { id: 'st7', name: 'Semana em chamas', desc: 'Sequência de 7 dias', icon: 'flame', p: function (D) { return [D.best, 7]; } },
+  { id: 'st30', name: 'Mês em chamas', desc: 'Sequência de 30 dias', icon: 'flame', p: function (D) { return [D.best, 30]; } },
+  { id: 'st100', name: 'Imparável', desc: 'Sequência de 100 dias', icon: 'flame', p: function (D) { return [D.best, 100]; } },
+  { id: 'c1', name: 'Quebrei o gelo', desc: 'Registre a primeira conversação', icon: 'chat', p: function (D) { return [D.convTotal, 1]; } },
+  { id: 'c25', name: 'Falante', desc: 'Registre 25 conversações', icon: 'chat', p: function (D) { return [D.convTotal, 25]; } },
+  { id: 'c100', name: 'Conversador nato', desc: 'Registre 100 conversações', icon: 'chat', p: function (D) { return [D.convTotal, 100]; } },
+  { id: 'w1', name: 'Semana perfeita', desc: 'Complete uma missão semanal', icon: 'target', p: function (D) { return [D.weeksDone, 1]; } },
+  { id: 'w4', name: 'Mês de ferro', desc: 'Complete 4 missões semanais', icon: 'shield', p: function (D) { return [D.weeksDone, 4]; } },
+  { id: 'w12', name: 'Trimestre de aço', desc: 'Complete 12 missões semanais', icon: 'shield', p: function (D) { return [D.weeksDone, 12]; } },
+  { id: 'mem', name: 'Memória de elefante', desc: 'Use o MemHack em 30 dias', icon: 'brain', p: function (D) { return [D.memTotal, 30]; } },
+  { id: 'pron', name: 'Sotaque afiado', desc: 'Conclua 25 aulas de pronúncia', icon: 'mic', p: function (D) { return [D.pron, 25]; } },
+  { id: 'side', name: 'Explorador', desc: 'Conclua uma missão extra', icon: 'map', p: function (D) { return [D.sides, 1]; } },
+  { id: 'wide', name: 'Curioso', desc: 'Faça aulas de 8 cursos diferentes', icon: 'star', p: function (D) { return [D.courses, 8]; } }
+];
+
+/* ---------- Utilidades de render ---------- */
+function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+function ic(name, cls) { return '<svg class="icon' + (cls ? ' ' + cls : '') + '" aria-hidden="true"><use href="#i-' + name + '"/></svg>'; }
+function fmt(n) { return n.toLocaleString('pt-BR'); }
+function hours(m) { var h = m / 60; return h < 10 ? h.toFixed(1).replace('.', ',') : fmt(Math.round(h)); }
+function chip(imp) { return '<i class="chip ' + imp + '">' + IMP[imp].label + '</i>'; }
+function lessonNum(k) { var l = L[k]; return l.kind === 'main' ? String(l.n).padStart(3, '0') : l.kind === 'task' ? 'M' + l.n : '#' + l.n; }
+function lessonLabel(k) { var l = L[k]; return l.kind === 'main' ? 'Aula ' + String(l.n).padStart(3, '0') : l.kind === 'task' ? 'Missão ' + l.n : 'Aula ' + l.n; }
+function nextKey(s) { for (var i = 0; i < s.keys.length; i++) if (!S.done[s.keys[i]]) return s.keys[i]; return null; }
+function missions(D) {
+  var out = [];
+  for (var i = 0; i < STEPS.length && out.length < 2; i++) { var s = STEPS[i]; if (s.n && !D.step[s.id].complete) out.push({ s: s, k: nextKey(s) }); }
+  return out;
+}
+function queue(n) {
+  var out = [];
+  for (var i = 0; i < STEPS.length && out.length < n; i++) { var s = STEPS[i]; if (!s.n) continue; for (var j = 0; j < s.keys.length && out.length < n; j++) if (!S.done[s.keys[j]]) out.push({ s: s, k: s.keys[j] }); }
+  return out;
+}
+function stepState(s, D) {
+  var p = D.step[s.id];
+  if (p.complete) return 'done';
+  if ((missions(D)[0] || {}).s === s || p.d > 0) return 'current';
+  return 'todo';
+}
+
+
+/* ---------- Render ---------- */
+var LAST = null;
+function marker(imp) { return '<span class="imp"><span class="mk mk-' + imp + '" aria-hidden="true"></span>' + IMP[imp].label + '</span>'; }
+function renderAll(D) {
+  LAST = D;
+  renderHud(D); renderMission(D); renderWeekly(D); renderStats(D); renderTrail(D); refreshDetail(D); renderBadges(D); renderFoot();
+}
+function renderHud(D) {
+  var span = D.lvTo - D.lvFrom, into = D.xp - D.lvFrom, pct = span ? into / span : 0;
+  var nr = nextRank(D.level);
+  document.getElementById('hud-lvl').innerHTML =
+    '<span class="lv-body"><span class="lv-rank">Nível ' + D.level + ' <span class="lv-sep">·</span> ' + esc(D.rank) + '</span>' +
+    '<span class="lv-track"' + (nr ? ' title="Próximo título: ' + esc(nr[1]) + ', no nível ' + nr[0] + '"' : '') + '><span style="width:' + (pct * 100).toFixed(1) + '%"></span></span>' +
+    '<span class="lv-xp num">' + fmt(into) + ' de ' + fmt(span) + ' XP para o nível ' + (D.level + 1) + '</span></span>';
+  document.getElementById('hud-pills').innerHTML =
+    '<span class="hstat' + (D.todayActive ? ' hot' : '') + '" title="' + (D.todayActive ? 'Sequência mantida hoje' : 'Estude algo hoje para manter a sequência') + '">' + ic('flame') + '<b class="num">' + D.streak + '</b><span class="hl">' + (D.streak === 1 ? 'dia seguido' : 'dias seguidos') + '</span></span>' +
+    '<span class="hstat" title="Escudos protegem a sequência se você perder um dia">' + ic('shield') + '<b class="num">' + D.shields + '</b><span class="hl">' + (D.shields === 1 ? 'escudo' : 'escudos') + '</span></span>' +
+    '<span class="hstat xpall"><b class="num">' + fmt(D.xp) + '</b><span class="hl">XP no total</span></span>';
+}
+function renderMission(D) {
+  var el = document.getElementById('mission'), ms = missions(D);
+  if (!ms.length) {
+    el.innerHTML = '<div class="pass-main"><div class="pass-top"><span class="pass-kicker">Linha principal concluída</span></div><h1 class="pass-title">Você é Remote Ready.</h1>' +
+      '<p class="pass-note">Os passos de 1 a 12 estão completos. Continue rumo ao B2 pelas estações opcionais.</p>' +
+      '<div class="pass-actions"><button class="btn btn-primary" data-action="select" data-step="s13" data-scroll="1">Abrir o Independent</button></div></div>' +
+      '<div class="pass-stub"><span class="stub-empty">Boa viagem.</span><span class="barcode" aria-hidden="true"></span></div>';
+    return;
+  }
+  var m = ms[0], l = L[m.k], p = D.step[m.s.id], task = l.kind === 'task';
+  var fields = [['Estação', m.s.n + ' de 12', false], [task ? 'Missão' : 'Aula', lessonNum(m.k), true], ['Tipo', task ? 'Prática com o Claude' : (l.ty || COURSES[l.c].name), false]];
+  if (l.d) fields.push(['Duração', l.d + ' min', false]);
+  fields.push(['Recompensa', '+' + xpOf(m.k) + ' XP', false]);
+  var html = '<div class="pass-main"><div class="pass-top"><span class="pass-kicker">Próxima parada</span><span class="pass-route">' + esc(m.s.title) + '</span></div>' +
+    '<h1 class="pass-title">' + esc(l.t) + '</h1>' +
+    '<dl class="pass-fields">' + fields.map(function (f) { return '<div><dt>' + f[0] + '</dt><dd' + (f[2] ? ' class="mono"' : '') + '>' + esc(f[1]) + '</dd></div>'; }).join('') + '</dl>' +
+    '<div class="pass-progress"><span class="pp-bar"><span style="width:' + (p.pct * 100).toFixed(1) + '%"></span></span><span class="num">' + p.d + ' de ' + p.t + ' feitas nesta estação</span></div>' +
+    '<div class="pass-actions"><button class="btn btn-primary" data-action="complete" data-k="' + m.k + '">' + ic('check') + 'Concluir ' + (task ? 'missão' : 'aula') + '</button>' +
+    '<button class="btn btn-quiet" data-action="select" data-step="' + m.s.id + '" data-scroll="1">Ver a estação ' + m.s.n + '</button></div></div>';
+  var nx = queue(2)[1];
+  if (nx) {
+    var l2 = L[nx.k], same = nx.s === m.s;
+    html += '<div class="pass-stub"><span class="pass-kicker">Na sequência</span><span class="stub-route">' + (same ? 'Mesma estação' : 'Próxima estação: ' + pad(nx.s.n) + ' · ' + esc(nx.s.title)) + '</span>' +
+      '<strong class="stub-title">' + esc(l2.t) + '</strong><span class="stub-meta">' + lessonLabel(nx.k) + ' · +' + xpOf(nx.k) + ' XP</span><span class="barcode" aria-hidden="true"></span></div>';
+  } else {
+    html += '<div class="pass-stub"><span class="pass-kicker">Na sequência</span><span class="stub-empty">Esta é a última aula da linha principal.</span><span class="barcode" aria-hidden="true"></span></div>';
+  }
+  el.innerHTML = html;
+}
+function ticks(have, goal) {
+  var s = '';
+  for (var i = 0; i < goal; i++) s += '<span class="tick' + (i < have ? ' on' : '') + '"></span>';
+  return '<span class="ticks" aria-hidden="true">' + s + '</span>';
+}
+function renderWeekly(D) {
+  var w = D.week, memToday = S.mem.indexOf(todayStr()) > -1;
+  var end = addDays(weekStart(new Date()), 6);
+  var rows = [['Aulas da grade principal', w.main, 5], ['Aula complementar', w.comp, 1], ['Conversações em grupo', w.conv, 2], ['Dias de MemHack', w.mem, 5]];
+  document.getElementById('weekly').innerHTML =
+    '<div class="wk-head"><h2>Meta da semana</h2><span class="wk-end">até domingo, ' + end.getDate() + '/' + pad(end.getMonth() + 1) + '</span></div>' +
+    '<ul class="wk-list">' + rows.map(function (r) {
+      var ok = r[1] >= r[2];
+      return '<li class="wk-row' + (ok ? ' ok' : '') + '"><span>' + r[0] + '</span>' + ticks(Math.min(r[1], r[2]), r[2]) + '<span class="wk-val num">' + (ok ? 'feito' : r[1] + '/' + r[2]) + '</span></li>';
+    }).join('') + '</ul>' +
+    '<p class="wk-reward' + (D.weekDone ? ' won' : '') + '">' + (D.weekDone ? 'Meta cumprida: +100 XP e 1 escudo no domingo.' : 'Cumpra as quatro para ganhar +100 XP e 1 escudo.') + '</p>' +
+    '<div class="wk-actions"><button class="btn btn-line" data-action="conv">' + ic('plus') + 'Registrar conversa</button>' +
+    '<button class="btn btn-line' + (memToday ? ' on' : '') + '" data-action="mem" aria-pressed="' + memToday + '">' + ic(memToday ? 'check' : 'brain') + 'MemHack hoje</button></div>' +
+    (w.conv > 0 ? '<button class="wk-undo" data-action="conv-undo">Desfazer a última conversação</button>' : '');
+}
+function renderStats(D) {
+  var trailDone = STEPS.filter(function (s) { return s.n && s.n <= 12; }).reduce(function (a, s) { return a + s.keys.filter(function (k) { return S.done[k]; }).reduce(function (b, k) { return b + mins(k); }, 0); }, 0);
+  var pct = TRAIL_MIN ? Math.round(trailDone / TRAIL_MIN * 100) : 0;
+  document.getElementById('stats').innerHTML = [
+    [fmt(D.count) + '<small> / ' + LESSON_TOTAL + '</small>', 'Aulas concluídas', 'Grade e complementares'],
+    [pct + '<small>%</small>', 'Da linha principal', '~' + hours(trailDone) + ' de ' + hours(TRAIL_MIN) + ' horas'],
+    [esc(D.cefr), 'Nível pela trilha', 'Estimativa, não é prova'],
+    [D.best + '<small> ' + (D.best === 1 ? 'dia' : 'dias') + '</small>', 'Melhor sequência', 'Agora: ' + D.streak],
+    [D.weeksDone + '', 'Metas semanais', D.convTotal + ' conversações']
+  ].map(function (f) { return '<div class="fig"><span class="fig-val num">' + f[0] + '</span><span class="fig-lab">' + f[1] + '</span><span class="fig-note">' + f[2] + '</span></div>'; }).join('');
+}
+function stationHtml(s, D) {
+  var p = D.step[s.id], st = stepState(s, D), sel = ui.sel === s.id;
+  var state = st === 'done' ? 'Concluída' : (missions(D)[0] || {}).s === s ? 'Você está aqui' : '';
+  return '<button class="station ' + st + (sel ? ' sel' : '') + '" data-action="select" data-step="' + s.id + '" aria-pressed="' + sel + '">' +
+    '<span class="rail" aria-hidden="true"><span class="dot">' + (st === 'done' ? ic('check') : '') + '</span></span>' +
+    '<span class="st-body"><span class="st-top"><span class="st-n">' + (s.n ? pad(s.n) : '··') + '</span><span class="st-title">' + esc(s.title) + '</span>' + (state ? '<span class="st-state">' + state + '</span>' : '') + '</span>' +
+    '<span class="st-meta">' + marker(s.imp) + '<span class="num">' + p.d + '/' + p.t + '</span><span class="mini"><span style="width:' + (p.pct * 100).toFixed(1) + '%"></span></span></span></span></button>';
+}
+function renderTrail(D) {
+  var reached = D.ready[0] === D.ready[1];
+  var html = '';
+  STOPS.forEach(function (stop) {
+    if (!stop) {
+      html += '<div class="terminal' + (reached ? ' reached' : '') + '"><span class="rail" aria-hidden="true"><span class="term-mark">' + ic('globe') + '</span></span>' +
+        '<span class="term-body"><b>Pronto para trabalhar com gringos</b><span>Daqui em diante, rumo ao B2</span></span></div>';
+      return;
+    }
+    if (stop.length > 1) html += '<div class="par"><div class="par-cap"><span class="rail" aria-hidden="true"></span><span>Ao mesmo tempo</span></div>' + stop.map(function (id) { return stationHtml(STEP[id], D); }).join('') + '</div>';
+    else html += stationHtml(STEP[stop[0]], D);
+  });
+  html += '<div class="offline"><h3>Fora da linha</h3><p>Missões extras para variar, a partir do Basic.</p>' +
+    ['x1', 'x2', 'x3', 'x4'].map(function (id) { return stationHtml(STEP[id], D); }).join('') + '</div>';
+  var trail = document.getElementById('trail'), det = document.getElementById('detail'), board = trail.parentNode;
+  if (trail.contains(det)) board.appendChild(det);
+  trail.innerHTML = html;
+  placeDetail();
+}
+function isNarrow() { return window.innerWidth <= 980; }
+function placeDetail() {
+  var trail = document.getElementById('trail'), det = document.getElementById('detail');
+  var st = ui.sel && trail.querySelector('.station[data-step="' + ui.sel + '"]');
+  if (isNarrow() && st) { if (st.nextSibling !== det) st.after(det); }
+  else if (det.parentNode !== trail.parentNode) trail.parentNode.appendChild(det);
+}
+var wasNarrow = isNarrow();
+window.addEventListener('resize', function () { if (isNarrow() !== wasNarrow) { wasNarrow = isNarrow(); placeDetail(); } });
+function defaultSel(D) { var ms = missions(D); return ms.length ? ms[0].s.id : 's13'; }
+function renderDetail() {
+  var s = STEP[ui.sel];
+  var meta = [];
+  if (s.course && s.course.tutor) meta.push('Com <b>' + esc(s.course.tutor) + '</b>');
+  meta.push('<b>' + s.keys.length + '</b> ' + (s.tasks ? 'missões' : 'aulas'));
+  if (s.minutes) meta.push('cerca de <b>' + hours(s.minutes) + ' h</b>');
+  meta.push(s.tasks ? 'Fora da Fluency' : s.course.kind === 'main' ? 'Grade principal' : 'Curso complementar');
+  var html = '<div class="d-head"><div class="d-top"><span class="d-step">' + (s.n ? 'Estação ' + pad(s.n) : 'Fora da linha') + '</span>' + marker(s.imp) + (s.when ? '<span class="d-when">' + esc(s.when) + '</span>' : '') + '</div>' +
+    '<h2>' + esc(s.title) + '</h2><p class="d-why">' + esc(s.why) + '</p><div class="d-meta">' + meta.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>' +
+    '<div class="d-prog" id="d-prog"><div class="d-bar"><span></span></div><span class="d-pct"></span><span class="d-reward"><span></span></span></div></div>' +
+    '<div class="d-tools"><label class="search"><span class="sr">Buscar aula</span>' + ic('search') + '<input type="search" id="q" placeholder="Buscar nesta estação" value="' + esc(ui.q) + '"></label>' +
+    '<label class="toggle"><input type="checkbox" id="hide"' + (ui.hide ? ' checked' : '') + '><span class="sw"></span>Ocultar concluídas</label><span class="d-hint">Shift + clique marca várias seguidas</span></div>' +
+    '<div class="d-body" id="d-body">';
+  s.groups.forEach(function (g, gi) {
+    html += '<section class="grp" data-g="' + gi + '"><div class="grp-head"><h3>' + esc(g.label) + '</h3><span class="grp-count num"></span>' + (g.full ? '<span class="grp-bonus">+25 XP ao completar</span>' : '') +
+      '<button class="btn-text" data-action="group" data-g="' + gi + '"></button></div><div class="grp-bar"><span></span></div><ul class="lessons">';
+    g.keys.forEach(function (k) {
+      var l = L[k], sub = [];
+      if (l.ty) sub.push(esc(l.ty));
+      if (l.d) sub.push(l.d + ' min');
+      if (l.kind === 'task') sub.push('Pratique comigo no chat');
+      html += '<li class="lesson" data-k="' + k + '"><label><input type="checkbox" id="cb-' + k + '" data-action="toggle" data-k="' + k + '"><span class="box">' + ic('check') + '</span>' +
+        '<span class="l-num">' + lessonNum(k) + '</span><span class="l-main"><span class="l-title">' + esc(l.t) + '</span>' + (sub.length ? '<span class="l-sub">' + sub.join(' · ') + '</span>' : '') + '</span>' +
+        '<span class="l-xp">+' + xpOf(k) + ' XP</span></label></li>';
+    });
+    html += '</ul></section>';
+  });
+  html += '<p class="empty" id="d-empty" hidden></p></div>';
+  var el = document.getElementById('detail');
+  el.innerHTML = html;
+  el.dataset.step = s.id;
+  refreshDetail(LAST);
+}
+function refreshDetail(D) {
+  var el = document.getElementById('detail');
+  if (!ui.sel || el.dataset.step !== ui.sel) return renderDetail();
+  if (el.scrollTop) el.scrollTop = 0; // o painel em si nunca deve rolar, só a lista dentro dele
+  var s = STEP[ui.sel], p = D.step[s.id];
+  var prog = document.getElementById('d-prog');
+  prog.classList.toggle('complete', p.complete);
+  prog.querySelector('.d-bar span').style.width = (p.pct * 100).toFixed(1) + '%';
+  prog.querySelector('.d-pct').textContent = p.d + ' de ' + p.t;
+  prog.querySelector('.d-reward span').textContent = p.complete ? 'Estação concluída. +' + IMP[s.imp].bonus + ' XP ganhos.' : 'Conclua a estação para ganhar +' + IMP[s.imp].bonus + ' XP.';
+  var next = nextKey(s), q = ui.q.trim().toLowerCase(), visible = 0;
+  s.groups.forEach(function (g, gi) {
+    var sec = el.querySelector('.grp[data-g="' + gi + '"]'), d = 0, shown = 0;
+    g.keys.forEach(function (k) {
+      var li = sec.querySelector('.lesson[data-k="' + k + '"]'), on = !!S.done[k];
+      if (on) d++;
+      li.classList.toggle('done', on); li.classList.toggle('next', k === next);
+      li.querySelector('input').checked = on;
+      var match = !q || L[k].t.toLowerCase().indexOf(q) > -1 || (L[k].ty || '').toLowerCase().indexOf(q) > -1 || lessonNum(k).indexOf(q) > -1;
+      li.hidden = !match || (ui.hide && on);
+      if (!li.hidden) shown++;
+    });
+    visible += shown;
+    sec.hidden = shown === 0;
+    var all = d === g.keys.length;
+    sec.classList.toggle('complete', all);
+    sec.querySelector('.grp-count').textContent = d + ' de ' + g.keys.length;
+    sec.querySelector('.grp-bar span').style.width = (d / g.keys.length * 100) + '%';
+    sec.querySelector('[data-action="group"]').textContent = all ? 'Desmarcar' : (g.keys.length > 1 ? 'Concluir todas' : 'Concluir');
+  });
+  var empty = document.getElementById('d-empty');
+  empty.hidden = visible > 0;
+  empty.textContent = ui.hide && !q ? 'Tudo concluído nesta estação. Desligue "Ocultar concluídas" para revisar.' : 'Nenhuma aula encontrada.';
+}
+var INKS = ['ink-a', 'ink-b', 'ink-c'];
+function stampSvg(x) {
+  var b = x.b, id = 'arc-' + b.id, name = b.name.toUpperCase();
+  var seed = 0; for (var i = 0; i < b.id.length; i++) seed = (seed * 31 + b.id.charCodeAt(i)) % 997;
+  var rot = (seed % 17) - 8;
+  var fit = name.length > 14 ? ' textLength="' + Math.min(118, name.length * 7.2) + '" lengthAdjust="spacingAndGlyphs"' : '';
+  var center = x.won
+    ? '<use href="#i-' + b.icon + '" x="45" y="43" width="30" height="30" class="st-ic"/>'
+    : '<text x="60" y="65" text-anchor="middle" class="st-prog">' + fmt(x.have) + '/' + fmt(x.goal) + '</text>';
+  return '<svg class="stamp-svg" viewBox="0 0 120 120" style="transform:rotate(' + (x.won ? rot : 0) + 'deg)" aria-hidden="true">' +
+    '<defs><path id="' + id + '" d="M 21 62 A 39 39 0 1 1 99 62"/></defs>' +
+    '<circle cx="60" cy="60" r="56" class="ring1"/><circle cx="60" cy="60" r="50" class="ring2"/>' +
+    '<text class="st-arc"><textPath href="#' + id + '" startOffset="50%" text-anchor="middle"' + fit + '>' + esc(name) + '</textPath></text>' + center +
+    '<text x="60" y="93" text-anchor="middle" class="st-foot">' + (x.won ? 'APROVADO' : 'PENDENTE') + '</text></svg>';
+}
+function renderBadges(D) {
+  var won = D.badges.filter(function (x) { return x.won; }).length;
+  document.getElementById('badges-sub').textContent = won + ' de ' + D.badges.length + ' carimbos';
+  var order = D.badges.map(function (x, i) { return { x: x, i: i }; }).sort(function (a, b) { return (b.x.won - a.x.won) || ((b.x.have / b.x.goal) - (a.x.have / a.x.goal)) || (a.i - b.i); });
+  var shown = ui.allBadges ? order : order.filter(function (o, i) { return o.x.won || i < won + 6; });
+  document.getElementById('badges').innerHTML = shown.map(function (o) {
+    var x = o.x;
+    return '<figure class="stamp ' + (x.won ? 'won ' + INKS[o.i % 3] : 'locked') + '">' + stampSvg(x) +
+      '<figcaption><b>' + esc(x.b.name) + '</b><span>' + esc(x.b.desc) + '</span></figcaption></figure>';
+  }).join('') + '<div class="stamps-more"><button class="btn btn-line" data-action="badges-all" aria-expanded="' + !!ui.allBadges + '">' +
+    (ui.allBadges ? 'Mostrar só os próximos' : 'Ver todos os ' + D.badges.length + ' carimbos') + '</button></div>';
+}
+var resetArmed = false;
+function renderFoot() {
+  document.getElementById('foot').innerHTML = '<span>Catálogo da Fluency Academy verificado em 20/08/2026 · ' + LESSON_TOTAL + ' aulas</span>' +
+    (resetArmed ? '<span style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span class="danger">Apagar todo o progresso? Não dá para desfazer.</span><button class="btn btn-danger" data-action="reset-yes">Apagar tudo</button><button class="btn btn-line" data-action="reset-no">Cancelar</button></span>'
+      : '<button class="btn-text" style="color:var(--ink-3)" data-action="reset">Zerar progresso</button>');
+}
+
+
+/* ---------- Feedback ---------- */
+var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+function toast(icon, title, text, action, level) {
+  var box = document.getElementById('toasts'), t = document.createElement('div');
+  t.className = 'toast' + (level ? ' level' : '');
+  t.innerHTML = '<span class="t-ic">' + (level ? level : ic(icon)) + '</span><span class="t-body"><b>' + esc(title) + '</b>' + (text ? esc(text) : '') + '</span>';
+  if (action) { var b = document.createElement('button'); b.textContent = action.label; b.onclick = function () { action.fn(); t.remove(); }; t.appendChild(b); }
+  box.appendChild(t);
+  while (box.children.length > 3) box.firstChild.remove();
+  setTimeout(function () { t.remove(); }, action ? 6000 : 4200);
+}
+function floatXp(el, n) {
+  if (!el || !n) return;
+  var r = el.getBoundingClientRect(), f = document.createElement('div');
+  f.className = 'float-xp'; f.textContent = '+' + n + ' XP';
+  f.style.left = Math.min(window.innerWidth - 90, Math.max(8, r.left + r.width / 2 - 30)) + 'px';
+  f.style.top = Math.max(8, r.top - 8) + 'px';
+  document.body.appendChild(f);
+  setTimeout(function () { f.remove(); }, 1000);
+}
+function levelUp(before, D) {
+  var rankUp = D.rank !== before.rank;
+  toast('star', 'Nível ' + D.level + '!', rankUp ? ' Novo título: ' + D.rank : ' Continue assim, ' + D.rank + '.', null, D.level);
+  confetti();
+}
+function confetti() {
+  if (reduce) return;
+  var c = document.getElementById('confetti'), ctx = c.getContext('2d');
+  c.hidden = false; c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio;
+  ctx.scale(devicePixelRatio, devicePixelRatio);
+  var cs = getComputedStyle(document.documentElement);
+  var cols = ['--accent', '--signal', '--ink-2', '--accent'].map(function (v) { return cs.getPropertyValue(v).trim(); });
+  var P = [];
+  for (var i = 0; i < 140; i++) P.push({ x: innerWidth / 2, y: innerHeight * .45, vx: (Math.random() - .5) * 14, vy: -Math.random() * 13 - 3, r: Math.random() * 6 + 4, a: Math.random() * 6, va: (Math.random() - .5) * .3, c: cols[i % cols.length] });
+  var t0 = performance.now();
+  (function frame(t) {
+    ctx.clearRect(0, 0, innerWidth, innerHeight);
+    P.forEach(function (p) { p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.a += p.va; ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.a); ctx.fillStyle = p.c; ctx.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); ctx.restore(); });
+    if (t - t0 < 2200) requestAnimationFrame(frame); else { ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, c.width, c.height); c.hidden = true; }
+  })(t0);
+}
+
+/* ---------- Ações ---------- */
+function commit(before, origin, undo) {
+  S.updatedAt = Date.now();
+  var after = compute();
+  var gain = after.xp - before.xp;
+  if (gain > 0) floatXp(origin, gain);
+  STEPS.forEach(function (s) {
+    if (after.step[s.id].complete && !before.step[s.id].complete) {
+      toast('trophy', (s.n ? 'Passo ' + s.n + ' concluído' : 'Missão extra concluída') + ': ' + s.title, ' +' + IMP[s.imp].bonus + ' XP de bônus');
+      confetti();
+    }
+  });
+  after.badges.forEach(function (x) {
+    if (x.won && S.seen.indexOf(x.b.id) < 0) { S.seen.push(x.b.id); toast(x.b.icon, 'Conquista: ' + x.b.name, x.b.desc); }
+  });
+  if (after.level > before.level) levelUp(before, after);
+  if (undo && gain > 0) toast('check', undo.title, ' +' + gain + ' XP', { label: 'Desfazer', fn: undo.fn });
+  save();
+  renderAll(after);
+}
+function setDone(keys, val, origin, quiet) {
+  var before = compute(), t = todayStr();
+  var changed = keys.filter(function (k) { return val ? !S.done[k] : !!S.done[k]; });
+  if (!changed.length) return;
+  changed.forEach(function (k) { if (val) S.done[k] = t; else delete S.done[k]; });
+  var undo = val && !quiet ? { title: changed.length === 1 ? L[changed[0]].t : changed.length + ' aulas concluídas', fn: function () { setDone(changed, false, null, true); } } : null;
+  commit(before, origin, undo);
+}
+function select(id, scroll) {
+  ui.sel = id; ui.q = '';
+  try { localStorage.setItem(LS_KEY + ':ui', JSON.stringify({ sel: ui.sel, hide: ui.hide })); } catch (e) {}
+  renderTrail(LAST); renderDetail();
+  var target = isNarrow() ? document.querySelector('.station[data-step="' + id + '"]') : scroll ? document.getElementById('detail') : null;
+  if (target) target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+}
+document.addEventListener('click', function (e) {
+  var t = e.target.closest('[data-action]');
+  if (!t || t.dataset.action === 'toggle') return;
+  var a = t.dataset.action;
+  if (a === 'select') select(t.dataset.step, t.dataset.scroll === '1');
+  else if (a === 'complete') setDone([t.dataset.k], true, t);
+  else if (a === 'group') {
+    var g = STEP[ui.sel].groups[+t.dataset.g], all = g.keys.every(function (k) { return S.done[k]; });
+    setDone(g.keys, !all, t);
+  } else if (a === 'conv') { var b = compute(); S.conv.push(Date.now()); commit(b, t); }
+  else if (a === 'conv-undo') { var wk = wkey(todayStr()); for (var i = S.conv.length - 1; i >= 0; i--) { if (wkey(ymd(new Date(S.conv[i]))) === wk) { var b2 = compute(); S.conv.splice(i, 1); commit(b2, t); break; } } }
+  else if (a === 'mem') { var b3 = compute(), td = todayStr(), ix = S.mem.indexOf(td); if (ix > -1) S.mem.splice(ix, 1); else S.mem.push(td); commit(b3, t); }
+  else if (a === 'badges-all') { ui.allBadges = !ui.allBadges; renderBadges(LAST); }
+  else if (a === 'reset') { resetArmed = true; renderFoot(); }
+  else if (a === 'reset-no') { resetArmed = false; renderFoot(); }
+  else if (a === 'reset-yes') { resetArmed = false; S = blank(); S.updatedAt = Date.now(); save(); renderAll(compute()); toast('check', 'Progresso zerado', ''); }
+});
+var lastToggled = null;
+// Shift + clique num rótulo não marca a caixinha no Chrome, então o intervalo é tratado aqui.
+document.addEventListener('click', function (e) {
+  if (!e.shiftKey || !e.target.closest) return;
+  var lab = e.target.closest('.lesson label');
+  if (!lab) return;
+  e.preventDefault();
+  var k = lab.querySelector('input').dataset.k, keys = STEP[ui.sel].keys, a = keys.indexOf(lastToggled), b = keys.indexOf(k);
+  var val = !S.done[k];
+  if (a > -1 && a !== b) setDone(keys.slice(Math.min(a, b), Math.max(a, b) + 1), val, lab, false);
+  else setDone([k], val, lab, true);
+  lastToggled = k;
+  if (window.getSelection) window.getSelection().removeAllRanges();
+}, true);
+document.addEventListener('change', function (e) {
+  var t = e.target;
+  if (t.dataset && t.dataset.action === 'toggle') { setDone([t.dataset.k], t.checked, t.closest('label'), true); lastToggled = t.dataset.k; }
+  else if (t.id === 'hide') { ui.hide = t.checked; try { localStorage.setItem(LS_KEY + ':ui', JSON.stringify({ sel: ui.sel, hide: ui.hide })); } catch (e2) {} refreshDetail(LAST); }
+});
+document.addEventListener('input', function (e) { if (e.target.id === 'q') { ui.q = e.target.value; refreshDetail(LAST); } });
+
+/* ---------- Persistência: navegador + GitHub Gist (sem banco de dados) ---------- */
+var SEED = {"conv":[1793137331112],"done":{"ec1":"2026-10-27","m1":"2026-10-27","m10":"2026-10-27","m11":"2026-10-27","m12":"2026-10-27","m13":"2026-10-27","m14":"2026-10-27","m15":"2026-10-27","m16":"2026-10-27","m17":"2026-10-27","m18":"2026-10-27","m19":"2026-10-27","m2":"2026-10-27","m20":"2026-10-27","m21":"2026-10-27","m22":"2026-10-27","m23":"2026-10-27","m24":"2026-10-27","m25":"2026-10-27","m26":"2026-10-27","m27":"2026-10-27","m28":"2026-10-27","m29":"2026-10-27","m3":"2026-10-27","m30":"2026-10-27","m31":"2026-10-27","m32":"2026-10-27","m33":"2026-10-27","m34":"2026-10-27","m35":"2026-10-27","m36":"2026-10-27","m37":"2026-10-28","m38":"2026-10-28","m4":"2026-10-27","m5":"2026-10-27","m6":"2026-10-27","m7":"2026-10-27","m8":"2026-10-27","m9":"2026-10-27"},"mem":["2026-10-27","2026-10-28"],"seen":["first","unit","c1"],"updatedAt":1793225901611,"v":1};
+var GH_TOKEN_KEY = 'fq-gh-token', GH_GIST_KEY = 'fq-gh-gist', GIST_FILE = 'fluency-quest.json';
+var saveTimer = null, pulling = false;
+function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+function lsSet(k, v) { try { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); } catch (e) {} }
+function ghToken() { return lsGet(GH_TOKEN_KEY); }
+function setSync(m) {
+  var el = document.getElementById('sync');
+  var map = { cloud: ['cloud', 'Salvo no GitHub'], syncing: ['cloud', 'Sincronizando…'], error: ['cloud', 'Falha ao sincronizar'], local: ['device', 'Salvo neste navegador'] };
+  var x = map[m] || map.local;
+  el.innerHTML = ic(x[0]) + '<span>' + x[1] + '</span>';
+  el.classList.toggle('err', m === 'error');
+  el.title = x[1] + ' · clique para opções de sincronização e backup';
+}
+function applyState(next) {
+  S = next;
+  lsSet(LS_KEY, JSON.stringify(S));
+  var D = compute();
+  D.badges.forEach(function (x) { if (x.won && S.seen.indexOf(x.b.id) < 0) S.seen.push(x.b.id); });
+  renderAll(D);
+}
+function gh(method, path, body, tok) {
+  return fetch('https://api.github.com' + path, {
+    method: method,
+    cache: 'no-store',
+    headers: { 'Accept': 'application/vnd.github+json', 'Authorization': 'Bearer ' + (tok || ghToken()), 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json' },
+    body: body ? JSON.stringify(body) : undefined
+  }).then(function (r) {
+    if (r.status === 401) throw new Error('auth');
+    if (r.status === 403) throw new Error('perm');
+    if (!r.ok) throw new Error('http ' + r.status);
+    return r.json();
+  });
+}
+async function findGist() {
+  var id = lsGet(GH_GIST_KEY);
+  if (id) return id;
+  for (var page = 1; page <= 10; page++) {
+    var list = await gh('GET', '/gists?per_page=100&page=' + page);
+    for (var i = 0; i < list.length; i++) if (list[i].files && list[i].files[GIST_FILE]) { lsSet(GH_GIST_KEY, list[i].id); return list[i].id; }
+    if (list.length < 100) break;
+  }
+  return null;
+}
+async function readRemote(id) {
+  var g;
+  try { g = await gh('GET', '/gists/' + id); }
+  catch (e) { if (e.message === 'http 404') { lsSet(GH_GIST_KEY, null); return null; } throw e; }
+  var f = g.files && g.files[GIST_FILE];
+  if (!f) return null;
+  var txt = f.truncated ? await (await fetch(f.raw_url, { cache: 'no-store' })).text() : f.content;
+  return sanitize(JSON.parse(txt));
+}
+async function writeRemote() {
+  var body = { files: {} };
+  body.files[GIST_FILE] = { content: JSON.stringify(S, null, 1) };
+  var id = lsGet(GH_GIST_KEY);
+  if (id) {
+    try { await gh('PATCH', '/gists/' + id, body); return; }
+    catch (e) { if (e.message !== 'http 404') throw e; lsSet(GH_GIST_KEY, null); }
+  }
+  body.description = 'Fluency Quest: progresso (não apague)';
+  body.public = false;
+  var g = await gh('POST', '/gists', body);
+  lsSet(GH_GIST_KEY, g.id);
+}
+function syncErr(e) {
+  if (e && e.message === 'auth') {
+    lsSet(GH_TOKEN_KEY, null); lsSet(GH_GIST_KEY, null);
+    toast('cloud', 'Token do GitHub expirou ou é inválido.', ' Seu progresso continua salvo neste navegador. Conecte de novo pelo botão de sincronização.');
+    setSync('local'); refreshDlg(); return;
+  }
+  setSync('error');
+}
+async function pull() {
+  if (!ghToken() || pulling) return;
+  pulling = true; setSync('syncing');
+  try {
+    var id = await findGist();
+    var remote = id ? await readRemote(id) : null;
+    if (remote && remote.updatedAt > S.updatedAt) applyState(remote);
+    else if (!remote || remote.updatedAt < S.updatedAt) await writeRemote();
+    setSync('cloud');
+  } catch (e) { syncErr(e); }
+  pulling = false;
+}
+function save() {
+  lsSet(LS_KEY, JSON.stringify(S));
+  if (!ghToken()) return setSync('local');
+  clearTimeout(saveTimer);
+  setSync('syncing');
+  saveTimer = setTimeout(function () { writeRemote().then(function () { setSync('cloud'); }, syncErr); }, 1200);
+}
+
+/* Primeiro acesso: começa com o progresso que você já tinha. */
+if (!S.updatedAt && !Object.keys(S.done).length) { S = sanitize(SEED); lsSet(LS_KEY, JSON.stringify(S)); }
+
+setSync(ghToken() ? 'syncing' : 'local');
+if (!ui.sel) ui.sel = defaultSel(compute());
+var D0 = compute();
+D0.badges.forEach(function (x) { if (x.won && S.seen.indexOf(x.b.id) < 0) S.seen.push(x.b.id); });
+renderAll(D0);
+
+/* ---------- Barra: nome, sair e diálogo ---------- */
+var CFG = window.FQ_CONFIG || {};
+var whoName = document.getElementById('who-name');
+if (CFG.nome) whoName.textContent = CFG.nome; else whoName.hidden = true;
+document.getElementById('logout').addEventListener('click', function () { if (window.FQ_logout) window.FQ_logout(); });
+
+var dlg = document.getElementById('sync-dlg'), msg = document.getElementById('sync-msg');
+function say(t, bad) { msg.textContent = t || ''; msg.classList.toggle('bad', !!bad); }
+function refreshDlg() {
+  var on = !!ghToken();
+  document.getElementById('sync-on-box').hidden = !on;
+  document.getElementById('sync-off-box').hidden = on;
+}
+document.getElementById('sync').addEventListener('click', function () {
+  refreshDlg(); say('');
+  if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
+});
+document.getElementById('sync-close').addEventListener('click', function () { dlg.close ? dlg.close() : dlg.removeAttribute('open'); });
+dlg.addEventListener('click', function (e) { if (e.target === dlg && dlg.close) dlg.close(); });
+
+document.getElementById('sync-connect').addEventListener('click', async function () {
+  var inp = document.getElementById('sync-token'), tok = inp.value.trim(), b = this;
+  if (!tok) { say('Cole o token do GitHub no campo acima.', true); return; }
+  b.disabled = true; say('Verificando o token…');
+  try {
+    var me = await gh('GET', '/user', null, tok);
+    lsSet(GH_TOKEN_KEY, tok); lsSet(GH_GIST_KEY, null); inp.value = '';
+    refreshDlg();
+    await pull();
+    say(document.getElementById('sync').classList.contains('err') ? 'Conectado como ' + me.login + ', mas o token não tem a permissão Gists: Read and write.' : 'Conectado como ' + me.login + '. Seu progresso agora é salvo no GitHub.', document.getElementById('sync').classList.contains('err'));
+  } catch (e) {
+    say(e.message === 'auth' ? 'Token inválido. Confira se copiou o token inteiro.' : 'Não foi possível falar com o GitHub. Verifique sua internet e tente de novo.', true);
+  }
+  b.disabled = false;
+});
+document.getElementById('sync-now').addEventListener('click', async function () {
+  say('Sincronizando…'); await pull();
+  if (!ghToken()) return;
+  var bad = document.getElementById('sync').classList.contains('err');
+  say(bad ? 'Falha ao sincronizar. Confira a internet e a permissão do token.' : 'Tudo sincronizado.', bad);
+});
+document.getElementById('sync-off').addEventListener('click', function () {
+  lsSet(GH_TOKEN_KEY, null); lsSet(GH_GIST_KEY, null);
+  setSync('local'); refreshDlg();
+  say('Desconectado. O progresso continua neste navegador e o gist continua na sua conta do GitHub.');
+});
+
+document.getElementById('bk-export').addEventListener('click', function () {
+  var blob = new Blob([JSON.stringify(S, null, 1)], { type: 'application/json' });
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'fluency-quest-backup-' + todayStr() + '.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+  say('Backup baixado.');
+});
+var imp = document.getElementById('bk-import');
+document.getElementById('bk-import-btn').addEventListener('click', function () { imp.click(); });
+imp.addEventListener('change', function () {
+  var f = imp.files && imp.files[0]; if (!f) return;
+  var rd = new FileReader();
+  rd.onload = function () {
+    try {
+      var data = sanitize(JSON.parse(rd.result));
+      if (!Object.keys(data.done).length && !data.conv.length) throw new Error('vazio');
+      if (!confirm('Restaurar este backup? O progresso atual deste navegador será substituído.')) return;
+      data.updatedAt = Date.now();
+      applyState(data); save();
+      say('Backup restaurado: ' + Object.keys(data.done).length + ' itens concluídos.');
+    } catch (e) { say('Este arquivo não é um backup do Fluency Quest.', true); }
+    imp.value = '';
+  };
+  rd.readAsText(f);
+});
+
+/* Sincroniza depois do login e sempre que você volta para a aba. */
+function startSync() { pull(); document.addEventListener('visibilitychange', function () { if (!document.hidden) pull(); }); }
+if (window.FQ_AUTH) startSync(); else document.addEventListener('fq-login', startSync, { once: true });
+})();
+</script>
+
+</body></html>
